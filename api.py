@@ -7,6 +7,11 @@ import json
 
 
 def send_whatsapp_message(user_number, message,owner_phone_number,key_value):
+    logger.info(user_number)
+    logger.info(message)
+    logger.info(owner_phone_number)
+    logger.info(key_value)
+
     WHATSAPP_API_URL = f"https://graph.facebook.com/v12.0/{owner_phone_number}/messages"
 
     headers = {

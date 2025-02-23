@@ -41,20 +41,18 @@ def start_replying(data):
                         owner_info = get_owner_information(owner_phone_number)
 
                         if owner_info:
-                            # Extracting linked phone number and key
                             linked_phone_number = owner_info.get("linked_phone_number", None)
                             key_value = owner_info.get("key_value", None)
-
-                            response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
-                            text_response = response.text
-
-                            initialize_firebase().collection("whatsapp-execution-logs").add({
+                            
+                            try:
+                                response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
+                                text_response = response.text
+                                initialize_firebase().collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
                                     "response": text_response,
                                     "created-at": get_current_ist_time()
                                 })
-
-                            if response.status_code == 200:
+                                if response.status_code == 200:
                                     logger.info(f"Message sent to {user_number} : {message}")
                                     users_ref = initialize_firebase().collection("whatsapp-messages")
                                     users_ref.add({
@@ -64,7 +62,7 @@ def start_replying(data):
                                         "user-message": message,
                                         "created-date": get_current_ist_time()
                                     })
-                            else:
+                            except SomeException as e:
                                 logger.error(f"Failed to send message to {user_number}: {response.text}")
                                     
                         else:
