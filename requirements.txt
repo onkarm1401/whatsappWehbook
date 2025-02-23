@@ -2,4 +2,4 @@ functions-framework==3.0.0
 requests==2.28.2
 google-cloud-firestore==2.9.2
 firebase-admin==6.3.0
-google-cloud-secret-manager==2.16.2
+google-cloud-secret-manager==2.19.0
