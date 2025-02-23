@@ -1,7 +1,6 @@
 from firestore_config import initialize_firebase
 from date_utils import get_current_ist_time
 from api import send_whatsapp_message
-from personal_information import get_owner_information
 import logging
 
 logger = logging.getLogger(__name__)
