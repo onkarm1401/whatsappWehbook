@@ -3,9 +3,9 @@ import os
 import logging
 import requests
 from date_utils  import get_current_ist_time
-from whatsapp_utils import send_whatsapp_message
+from test_duplicate_records_in_database import check_record
 from firestore_config import initialize_firebase
-from check_duplicate_record import check_record
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
