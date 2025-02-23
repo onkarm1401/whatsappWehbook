@@ -3,7 +3,8 @@ import os
 import logging
 import requests
 from whatsapp_utils import extract_and_log_message
-from firestore_config import initialize_firebase  # Import the new lazy-loading function
+from firestore_config import initialize_firebase
+from date_utils import get_current_ist_time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +28,7 @@ def whatsapp_webhook(request):
 
     elif request.method == "POST":
         data = request.get_json(silent=True)
+        db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
         logger.info("Received WhatsApp Webhook: %s", data)
 
         if data and "entry" in data:
@@ -40,11 +42,6 @@ def whatsapp_webhook(request):
 
                         # Extract and log the message
                         extract_and_log_message(sender_id, text, owner_phone_number)
-
-                        # Store message in Firestore
-                        users_ref = db.collection("whatsapp-execution-logs")
-                        users_ref.add({"owner-number": owner_phone_number ,"message": text , "response": data})
-                        print("whatsapp response log is inserted into database!")
 
         return {"status": "received"}, 200
 

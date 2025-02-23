@@ -1,7 +1,7 @@
 import logging
 import requests
 import os
-
+from date_utils import get_current_ist_time
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -30,13 +30,16 @@ def send_whatsapp_message(recipient_id, message):
         "messaging_product": "whatsapp",
         "to": recipient_id,
         "text": {
-            "body": message
+            "body": "message"
         }
     }
 
     response = requests.post(WHATSAPP_API_URL, json=payload, headers=headers)
-    
+    db.collection("whatsapp-execution-logs").add({"api-type": "POST","response": response , "created-at": get_current_ist_time()})
+
     if response.status_code == 200:
         logger.info(f"Message sent to {recipient_id} : {message}")
+        users_ref = db.collection("whatsapp-messages")
+        users_ref.add({"owner-number": owner_phone_number,"owner-message":message, "user-number":recipient_id ,"user-message": message ,"created-date": get_current_ist_time})
     else:
         logger.error(f"Failed to send message to {recipient_id}: {response.text}")
