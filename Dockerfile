@@ -4,13 +4,15 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy only the requirements file first to leverage Docker cache for dependencies
+COPY requirements.txt ./
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
 # Copy all Python files to the working directory
-COPY *.py ./
-
-
-# Upgrade pip before installing dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . ./
 
 # Set environment variables securely (Use actual values in your deployment)
 ENV VERIFY_TOKEN=my_secure_token
