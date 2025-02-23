@@ -82,7 +82,7 @@ def get_owner_information(phone_number):
 
     try:
         # Query the database with the condition on phone_number
-        query = db.collection('your_collection_name').where('phone_number', '==', phone_number).stream()
+        query = db.collection('whatsapp-personal-information').where('phone_number', '==', phone_number).stream()
 
         # Convert the query results into a list of documents
         data_list = [doc.to_dict() for doc in query]
