@@ -18,8 +18,6 @@ def extract_and_log_message(sender_id, message,owner_phone_number):
     logger.info(f"Sender ID: {sender_id}")
     logger.info(f"Message: {message}")
 
-    get_filtered_firestore_data(message,owner_phone_number)
-
     send_whatsapp_message(sender_id, message)
 
 def send_whatsapp_message(recipient_id, message):
