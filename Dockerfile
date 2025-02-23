@@ -10,7 +10,8 @@ COPY main.py ./
 COPY whatsapp_utils.py ./
 COPY firestore_config.py ./
 
-# Install dependencies
+# Upgrade pip before installing dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variables securely (Use actual values in your deployment)
