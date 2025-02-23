@@ -9,6 +9,7 @@ COPY requirements.txt ./
 COPY main.py ./
 COPY whatsapp_utils.py ./
 COPY firestore_config.py ./
+COPY date_utils.py ./
 
 # Upgrade pip before installing dependencies
 RUN pip install --upgrade pip

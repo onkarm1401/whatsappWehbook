@@ -2,9 +2,9 @@ import functions_framework
 import os
 import logging
 import requests
+from date_utils  import get_current_ist_time
 from whatsapp_utils import extract_and_log_message
 from firestore_config import initialize_firebase
-from date_utils import get_current_ist_time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
