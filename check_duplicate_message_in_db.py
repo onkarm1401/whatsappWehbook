@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 def start_replying(data):
     db = initialize_firebase()
     if data and "entry" in data:
+
             for entry in data["entry"]:
                 for change in entry.get("changes", []):
                     if "messages" in change.get("value", {}):

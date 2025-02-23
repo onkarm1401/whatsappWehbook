@@ -35,6 +35,6 @@ def send_whatsapp_message(user_number, message,owner_phone_number):
     if response.status_code == 200:
         logger.info(f"Message sent to {user_number} : {message}")
         users_ref = initialize_firebase().collection("whatsapp-messages")
-        users_ref.add({"owner-number": owner_phone_number,"owner-message":message, "user-number":user_number ,"user-message": message ,"created-date": get_current_ist_time})
+        users_ref.add({"owner-number": owner_phone_number,"owner-message":message, "user-number":user_number ,"user-message": message ,"created-date": get_current_ist_time()})
     else:
         logger.error(f"Failed to send message to {user_number}: {response.text}")
