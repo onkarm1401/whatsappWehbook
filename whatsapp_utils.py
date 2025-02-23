@@ -2,6 +2,8 @@ import logging
 import requests
 import os
 from date_utils import get_current_ist_time
+from firestore_config import initialize_firebase
+
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
