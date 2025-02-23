@@ -40,7 +40,6 @@ def start_replying(data):
                         })
 
                         owner_info = get_owner_information(owner_phone_number)
-                        logger.info("Owner information: %d",owner_info)
 
                         if owner_info:
                             owner_info_dict = owner_info[0]
