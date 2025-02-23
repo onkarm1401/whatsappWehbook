@@ -5,7 +5,7 @@ import requests
 from date_utils  import get_current_ist_time
 from whatsapp_utils import send_whatsapp_message
 from firestore_config import initialize_firebase
-from check_duplicate_record import check_duplicate_record
+from check_duplicate_record import check_record
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -32,8 +32,8 @@ def whatsapp_webhook(request):
         db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
         logger.info("Received WhatsApp Webhook: %s", data)
 
-        check_duplicate_record(data)
- 
+        check_record(data)
+         
         return {"status": "received"}, 200
 
     return {"error": "Invalid request method"}, 405

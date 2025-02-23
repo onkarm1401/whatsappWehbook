@@ -1,6 +1,6 @@
 from firestore_config import initialize_firebase
 
-def check_duplicate_record(data):
+def check_record(data):
     db = initialize_firebase()
     if data and "entry" in data:
             for entry in data["entry"]:
