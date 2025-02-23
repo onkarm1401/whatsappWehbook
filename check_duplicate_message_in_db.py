@@ -1,8 +1,8 @@
 from firestore_config import initialize_firebase
 from date_utils import get_current_ist_time
 from api import send_whatsapp_message
-import logging
 
+import logging
 logger = logging.getLogger(__name__)
 
 def start_replying(data):
@@ -42,8 +42,9 @@ def start_replying(data):
                         logger.info(owner_info)
 
                         if owner_info:
-                            linked_phone_number = owner_info.get("phone_number", None)
-                            key_value = owner_info.get("key", None)
+                            owner_info_dict = owner_info[0]
+                            linked_phone_number = owner_info_dict.get("phone_number", None)
+                            key_value = owner_info_dict.get("key", None)
                             
                             try:
                                 response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
