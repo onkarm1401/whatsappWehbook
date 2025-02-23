@@ -1,23 +1,29 @@
 import os
 import json
-import base64
-from dotenv import load_dotenv
+from google.cloud import secretmanager
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Load environment variables from .env
-load_dotenv()
+def get_firebase_credentials():
+    """Fetch Firebase credentials from Google Cloud Secret Manager."""
+    client = secretmanager.SecretManagerServiceClient()
 
-# Read the Base64-encoded Firebase credentials
-firebase_creds_base64 = os.getenv("FIREBASE_CREDENTIALS")
+    # Construct the secret name using the project ID
+    project_id = os.getenv("GOOGLE_CLOUD_PROJECT")  # Automatically set in Cloud Run
+    secret_name = f"projects/{project_id}/secrets/FIREBASE_CREDENTIALS/versions/latest"
 
-if firebase_creds_base64:
-    # Decode Base64 to JSON
-    firebase_creds_json = json.loads(base64.b64decode(firebase_creds_base64).decode("utf-8"))
-    cred = credentials.Certificate(firebase_creds_json)
-    firebase_admin.initialize_app(cred)
-else:
-    raise Exception("Firebase credentials not found. Set FIREBASE_CREDENTIALS environment variable.")
+    # Access the secret value
+    response = client.access_secret_version(name=secret_name)
+    return json.loads(response.payload.data.decode("utf-8"))
+
+# Get Firebase credentials from Secret Manager
+firebase_creds = get_firebase_credentials()
+
+# Initialize Firebase with the fetched credentials
+cred = credentials.Certificate(firebase_creds)
+firebase_admin.initialize_app(cred)
 
 # Initialize Firestore
 db = firestore.client()
+
+print("Firebase Initialized Successfully from Secret Manager!")
