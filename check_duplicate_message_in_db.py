@@ -21,7 +21,7 @@ def execute_response_api(data, db):
     owner_phone_number = get_owner_number_from_response(data)
     user_number = get_user_number_from_response(data)
     
-    info_query = db.collection("whatsapp-personal-information").where("phone_number", "==", owner_phone_number).stream()
+    info_query = db.collection("whatsapp-personal-information").stream()
     info_list = [doc.to_dict() for doc in info_query]
     logger.info(info_list)
     
