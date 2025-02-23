@@ -7,7 +7,10 @@ from firebase_admin import credentials, firestore
 def get_firebase_credentials():
     """Fetch Firebase credentials from Google Cloud Secret Manager."""
     client = secretmanager.SecretManagerServiceClient()
-    project_id = os.getenv("GOOGLE_CLOUD_PROJECT")  # Cloud Run auto-sets this
+    
+    #project_id = os.getenv("GOOGLE_CLOUD_PROJECT")  # Cloud Run auto-sets this
+    project_id = "chatbot-2300b"  # Manually set your project ID
+
     secret_name = f"projects/{project_id}/secrets/FIREBASE_CREDENTIALS/versions/latest"
 
     response = client.access_secret_version(name=secret_name)
