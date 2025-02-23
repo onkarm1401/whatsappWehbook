@@ -45,17 +45,16 @@ def start_replying(data):
                             linked_phone_number = owner_info.get("linked_phone_number", None)
                             key_value = owner_info.get("key_value", None)
 
-                            if linked_phone_number and key_value:
-                                response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
-                                text_response = response.text
+                            response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
+                            text_response = response.text
 
-                                initialize_firebase().collection("whatsapp-execution-logs").add({
+                            initialize_firebase().collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
                                     "response": text_response,
                                     "created-at": get_current_ist_time()
                                 })
 
-                                if response.status_code == 200:
+                            if response.status_code == 200:
                                     logger.info(f"Message sent to {user_number} : {message}")
                                     users_ref = initialize_firebase().collection("whatsapp-messages")
                                     users_ref.add({
@@ -65,11 +64,9 @@ def start_replying(data):
                                         "user-message": message,
                                         "created-date": get_current_ist_time()
                                     })
-                                else:
-                                    logger.error(f"Failed to send message to {user_number}: {response.text}")
-
                             else:
-                                logger.error("No linked phone number or key_value found for the owner.")
+                                logger.error(f"Failed to send message to {user_number}: {response.text}")
+                                    
                         else:
                             logger.error("No information found for the given owner phone number.")
                     else:
