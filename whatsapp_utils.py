@@ -8,7 +8,7 @@ logger.setLevel(logging.INFO)
 
 # WhatsApp API details (for sending messages back)
 WHATSAPP_API_URL = "https://graph.facebook.com/v12.0/510167355521515/messages"
-ACCESS_TOKEN = "EAAJH2BRzadUBO0obGd4O0zoZAQlaeFzvcoMq3SbGGoVOfWv9RIy33oCYyCf0aZC2XyimQITyFnywKjKrPQ2IP3jKSRcJ4wVFI4ZAUMFiAHb2OsvZAOVEYjLSiBzU5Tlfy4ghN65MZBjFqcCtKV5Lr2pW9RmqEIZACVTpdmiVgup9x161X3DSZAZArci23uJyGZApIBxhGWpz1XyZAdBHTvChZCwDDuSG75ZBkbyIF5sZD"  
+ACCESS_TOKEN = "EAAJH2BRzadUBOZBxJ4zQShXFofnlBo7LaJpcK0u6U4RBg903ouq2Fbsh3DZCmWe4qZAaYs3VAZCVl1Qb2EVkmnxtjdkPZAH41kEQU2dTlsO0RG1a0aAX6L4FajuGgGMHVPhAeAHk5rMkFdrcdEl9xsyA4de545sZB0DZAF9XHWQWzNeeIY0UvvmvPUfQ7bHEjsXCC6TZBHlFWyuPHsUqvsirAvXbXlaEZBL2ZBV5EZD"  
 # Store your token in environment variable
 
 def extract_and_log_message(sender_id, message,owner_phone_number):
