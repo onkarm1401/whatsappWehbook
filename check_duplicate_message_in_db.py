@@ -1,6 +1,7 @@
 from firestore_config import initialize_firebase
 from date_utils import get_current_ist_time
 from api import send_whatsapp_message
+from personal_information import get_owner_information
 
 import logging
 logger = logging.getLogger(__name__)
@@ -36,7 +37,21 @@ def start_replying(data):
                         if record_count == 1 or record_count == 0:  # If record count is 1, or 0 (no records)
                             db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
                             
-                            response = send_whatsapp_message(user_number, "message", owner_phone_number)        
+                            owner_info = get_owner_information(owner_phone_number)
+                            # Assuming get_owner_information(owner_phone_number) returns a dictionary like:
+
+                            owner_info = get_owner_information(owner_phone_number)
+
+                            if owner_info:
+                                # Extracting linked phone number and key
+                                linked_phone_number = owner_info.get("linked_phone_number", None)
+                                key_value = owner_info.get("key_value", None)
+
+                            else:
+                                print("No information found for the given owner phone number.")
+
+
+                            response = send_whatsapp_message(user_number, "message", owner_phone_number , key_value)        
                             text_response = response.text
                             initialize_firebase().collection("whatsapp-execution-logs").add({"api-type": "POST","response": text_response , "created-at": get_current_ist_time()})
 

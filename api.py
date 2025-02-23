@@ -10,13 +10,12 @@ from personal_information import get_linked_phone_number , get_key_value
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-ACCESS_TOKEN = get_key_value() 
 WHATSAPP_API_URL = f"https://graph.facebook.com/v12.0/{get_linked_phone_number}/messages"
 
-def send_whatsapp_message(user_number, message,owner_phone_number):
+def send_whatsapp_message(user_number, message,owner_phone_number,key_value):
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
+        "Authorization": f"Bearer {key_value}",
     }
 
     payload = {
