@@ -48,3 +48,10 @@ def whatsapp_webhook(request):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
+from firestore_config import db
+
+# Example: Add Data to Firestore
+users_ref = db.collection("users")
+users_ref.add({"name": "John Doe", "email": "john@example.com"})
+
+print("Data added to Firestore!")

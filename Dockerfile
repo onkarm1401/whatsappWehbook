@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt ./
 COPY main.py ./
 COPY whatsapp_utils.py ./
+COPY firestore_config.py ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
