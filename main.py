@@ -2,21 +2,19 @@ import functions_framework
 import os
 import logging
 import requests
-from whatsapp_utils import extract_and_log_message  # Importing from the helper file
-from firestore_config import db
-import firestore_config
-
+from whatsapp_utils import extract_and_log_message
+from firestore_config import initialize_firebase  # Import the new lazy-loading function
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 @functions_framework.http
 def whatsapp_webhook(request):
     """Handles WhatsApp webhook verification and incoming messages."""
+    db = initialize_firebase()  # Call Firebase only inside this function
+
     if request.method == "GET":
-        # Webhook verification
         VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secure_token")
         mode = request.args.get("hub.mode")
         token = request.args.get("hub.verify_token")
@@ -28,7 +26,6 @@ def whatsapp_webhook(request):
         return {"error": "Invalid verification token"}, 403
 
     elif request.method == "POST":
-        # Handle incoming messages
         data = request.get_json(silent=True)
         logger.info("Received WhatsApp Webhook: %s", data)
 
@@ -39,12 +36,12 @@ def whatsapp_webhook(request):
                         message = change["value"]["messages"][0]
                         sender_id = message["from"]
                         text = message.get("text", {}).get("body", "No text message received")
-                        owner_phone_number = change["value"]["metadata"]["phone_number_id"]  # Extracting phone_number_id
-
+                        owner_phone_number = change["value"]["metadata"]["phone_number_id"]
 
                         # Extract and log the message
-                        extract_and_log_message(sender_id, text,owner_phone_number)
-                        firestore_config()
+                        extract_and_log_message(sender_id, text, owner_phone_number)
+
+                        # Store message in Firestore
                         users_ref = db.collection("users")
                         users_ref.add({"name": "John Doe", "email": "john@example.com"})
                         print("Data added to Firestore!")

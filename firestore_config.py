@@ -13,14 +13,13 @@ def get_firebase_credentials():
     response = client.access_secret_version(name=secret_name)
     return json.loads(response.payload.data.decode("utf-8"))
 
-# Get credentials from Secret Manager
-firebase_creds = get_firebase_credentials()
-
-# Initialize Firebase
-cred = credentials.Certificate(firebase_creds)
-firebase_admin.initialize_app(cred)
-
-# Initialize Firestore
-db = firestore.client()
-
-print("🔥 Firebase Initialized Successfully from Secret Manager!")
+# Initialize Firebase only when explicitly called
+def initialize_firebase():
+    global db
+    if not firebase_admin._apps:
+        firebase_creds = get_firebase_credentials()
+        cred = credentials.Certificate(firebase_creds)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("🔥 Firebase Initialized Successfully from Secret Manager!")
+    return db
