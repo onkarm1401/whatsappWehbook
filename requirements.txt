@@ -3,3 +3,5 @@ requests==2.28.2
 google-cloud-firestore==2.20.0
 firebase-admin==6.3.0
 google-cloud-secret-manager==2.19.0
+flask==2.2.5
+gunicorn==21.2.0  # Required for Cloud Run

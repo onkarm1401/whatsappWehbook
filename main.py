@@ -4,6 +4,7 @@ import logging
 import requests
 from whatsapp_utils import extract_and_log_message  # Importing from the helper file
 from firestore_config import db
+import firestore_config
 
 
 # Configure logging
@@ -43,6 +44,7 @@ def whatsapp_webhook(request):
 
                         # Extract and log the message
                         extract_and_log_message(sender_id, text,owner_phone_number)
+                        firestore_config()
                         users_ref = db.collection("users")
                         users_ref.add({"name": "John Doe", "email": "john@example.com"})
                         print("Data added to Firestore!")
