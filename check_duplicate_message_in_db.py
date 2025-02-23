@@ -24,6 +24,7 @@ def start_replying(data):
                         .where("owner_id", "==", owner_phone_number) \
                         .limit(1) \
                         .stream()
+                    logger.info(query)
 
                     # Convert the stream to a list to count the number of results returned
                     results = list(query)
@@ -39,7 +40,7 @@ def start_replying(data):
                         })
 
                         owner_info = get_owner_information(owner_phone_number)
-                        logger.info(owner_info)
+                        logger.info("Owner information: %d",owner_info)
 
                         if owner_info:
                             owner_info_dict = owner_info[0]
