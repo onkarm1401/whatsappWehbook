@@ -15,9 +15,9 @@ def start_replying(data):
             "response": data,
             "created-at": get_current_ist_time()
         })
-        execute_response_api(data,db)
+        execute_response_api(data, db)
 
-def execute_response_api(data,db):
+def execute_response_api(data, db):
     owner_phone_number = extract_owner_number_from_response(data)
     user_number = extract_user_number_from_response(data)
     
@@ -26,61 +26,71 @@ def execute_response_api(data,db):
     
     if info_list:
         info = info_list[0]
-        
         linked_phone_number = info.get("phone_number", None)
         key_value = info.get("key_value", None)
-        response = send_whatsapp_message(user_number, "message", owner_phone_number , key_value)        
+        response = send_whatsapp_message(user_number, "message", owner_phone_number , key_value)
         text_response = response.text
-        db.collection("whatsapp-execution-logs").add({"api-type": "POST","response": text_response , "created-at": get_current_ist_time()})
-        
+        db.collection("whatsapp-execution-logs").add({
+            "api-type": "POST",
+            "response": text_response,
+            "created-at": get_current_ist_time()
+        })
     else:
-        return None
+        logger.warning(f"No information found for owner: {owner_phone_number}")
 
-def extract_owner_number_from_response(data, db):    
+def extract_owner_number_from_response(data):
+    """Extract owner phone number from the response."""
     if data and "entry" in data:
         for entry in data["entry"]:
             for change in entry.get("changes", []):
                 if "messages" in change.get("value", {}):
                     return change["value"]["metadata"]["phone_number_id"]
+    return None
 
-def extract_user_number_from_response(data, db):    
+def extract_user_number_from_response(data):
+    """Extract user phone number from the response."""
     if data and "entry" in data:
         for entry in data["entry"]:
             for change in entry.get("changes", []):
                 if "messages" in change.get("value", {}):
-                    return message["from"]
-                    
-def extract_owner_message_from_response(data, db):    
-    if data and "entry" in data:
-        for entry in data["entry"]:
-            for change in entry.get("changes", []):
-                if "messages" in change.get("value", {}):
-                    return change["value"]["messages"][0]
-                    
-def extract_message_id_from_response(data, db):    
-    if data and "entry" in data:
-        for entry in data["entry"]:
-            for change in entry.get("changes", []):
-                if "messages" in change.get("value", {}):
-                    return message["id"]
-                 
-def extract_user_message_response(data, db):    
-    if data and "entry" in data:
-        for entry in data["entry"]:
-            for change in entry.get("changes", []):
-                if "messages" in change.get("value", {}):
-                    return message.get("text", {}).get("body", "No text message received")
-                                      
-def check_message_id_in_database(data, db):    
-                    query = db.collection("whatsapp-messages")\
-                        .where("message_id", "==", extract_message_id_from_response(data,db))\
-                        .where("owner_id", "==", extract_owner_number_from_response(data,db))\
-                        .limit(1)\
-                        .stream()
+                    return change["value"]["messages"][0]["from"]
+    return None
 
-                    # Convert the stream to a list to count the number of results returned
-                    results = list(query)
-                    record_count = len(results)
+def extract_message_id_from_response(data):
+    """Extract message ID from the response."""
+    if data and "entry" in data:
+        for entry in data["entry"]:
+            for change in entry.get("changes", []):
+                if "messages" in change.get("value", {}):
+                    return change["value"]["messages"][0]["id"]
+    return None
 
-                    logger.info("Number of matching records: %d", record_count)
-                    return record_count
+def extract_user_message_response(data):
+    """Extract user message from the response."""
+    if data and "entry" in data:
+        for entry in data["entry"]:
+            for change in entry.get("changes", []):
+                if "messages" in change.get("value", {}):
+                    return change["value"]["messages"][0].get("text", {}).get("body", "No text message received")
+    return None
+
+def check_message_id_in_database(data, db):
+    """Check if the message ID already exists in the database."""
+    message_id = extract_message_id_from_response(data)
+    owner_phone_number = extract_owner_number_from_response(data)
+    
+    if message_id and owner_phone_number:
+        query = db.collection("whatsapp-messages")\
+            .where("message_id", "==", message_id)\
+            .where("owner_id", "==", owner_phone_number)\
+            .limit(1)\
+            .stream()
+
+        # Convert the stream to a list to count the number of results returned
+        results = list(query)
+        record_count = len(results)
+        
+        logger.info("Number of matching records: %d", record_count)
+        return record_count
+    
+    return 0
