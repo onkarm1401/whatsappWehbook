@@ -31,7 +31,6 @@ def whatsapp_webhook(request):
         db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
         logger.info("Received WhatsApp Webhook: %s", data)
 
-        check_record(data)
 
         return {"status": "received"}, 200
 
