@@ -5,6 +5,10 @@ from date_utils import get_current_ist_time
 from firestore_config import initialize_firebase
 import json
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 def send_whatsapp_message(user_number, message,owner_phone_number,key_value):
     logger.info(user_number)
