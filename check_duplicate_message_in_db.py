@@ -73,8 +73,8 @@ def extract_user_message_response(data, db):
                                       
 def check_message_id_in_database(data, db):    
                     query = db.collection("whatsapp-messages")\
-                        .where("message_id", "==", message_id)\
-                        .where("owner_id", "==", owner_phone_number)\
+                        .where("message_id", "==", extract_message_id_from_response(data,db))\
+                        .where("owner_id", "==", extract_owner_number_from_response(data,db))\
                         .limit(1)\
                         .stream()
 
