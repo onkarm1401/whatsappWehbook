@@ -42,8 +42,8 @@ def start_replying(data):
                         logger.info(owner_info)
 
                         if owner_info:
-                            linked_phone_number = owner_info.get("linked_phone_number", None)
-                            key_value = owner_info.get("key_value", None)
+                            linked_phone_number = owner_info.get("phone_number", None)
+                            key_value = owner_info.get("key", None)
                             
                             try:
                                 response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
@@ -82,11 +82,8 @@ def get_owner_information(phone_number):
 
         # Convert the query results into a list of documents
         data_list = [doc.to_dict() for doc in query]
-
-        if data_list:
-            return data_list[0]  # Assuming we want to return the first match
-        else:
-            return None  # No data found
+        return data_list
+    
     except Exception as e:
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
-        return None  # Return None in case of error
+        return None  
