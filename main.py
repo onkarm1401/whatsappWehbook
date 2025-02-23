@@ -52,6 +52,3 @@ def whatsapp_webhook(request):
         return {"status": "received"}, 200
 
     return {"error": "Invalid request method"}, 405
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
