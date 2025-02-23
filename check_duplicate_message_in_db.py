@@ -19,21 +19,16 @@ def start_replying(data):
                         owner_phone_number = change["value"]["metadata"]["phone_number_id"]
 
                         # Save the message to Firestore
-                        db.collection("whatsapp-messages").add({
-                            "owner_id": owner_phone_number,
-                            "user_number": user_number,
-                            "user_message": user_message,
-                            "message_id": message_id,
-                            "created_at": get_current_ist_time()
-                        })
-
                         query = db.collection("whatsapp-messages")\
                                 .where("message_id", "==", message_id)\
                                 .where("owner_id", "==", owner_phone_number)\
+                                .limit(1)\
                                 .stream()
 
-                        # Count the number of records that match the query
-                        record_count = sum(1 for _ in query)  
+                        # Convert the stream to a list to count the number of results returned
+                        results = list(query)
+
+                        record_count = len(results)
 
                         logger.info("Number of matching records: %d", record_count)
 
@@ -41,4 +36,5 @@ def start_replying(data):
                             send_whatsapp_message(user_number, "message", owner_phone_number)
                         else:
                             logger.info("Duplicate message received from WhatsApp: %d", record_count)
+
 
