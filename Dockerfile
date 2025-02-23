@@ -10,6 +10,8 @@ COPY main.py ./
 COPY whatsapp_utils.py ./
 COPY firestore_config.py ./
 COPY date_utils.py ./
+COPY test_duplicate_records_in_database.py ./
+
 
 # Upgrade pip before installing dependencies
 RUN pip install --upgrade pip
