@@ -62,7 +62,7 @@ def start_replying(data):
                                         "user-message": message,
                                         "created-date": get_current_ist_time()
                                     })
-                            except SomeException as e:
+                            except Exception as e:
                                 logger.error(f"Failed to send message to {user_number}: {response.text}")
                                     
                         else:
