@@ -4,13 +4,8 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy only necessary files to optimize build
-COPY requirements.txt ./
-COPY main.py ./
-COPY whatsapp_utils.py ./
-COPY firestore_config.py ./
-COPY date_utils.py ./
-COPY check_duplicate_message_in_db.py ./
+# Copy all Python files to the working directory
+COPY *.py ./
 
 
 # Upgrade pip before installing dependencies

@@ -28,7 +28,6 @@ def whatsapp_webhook(request):
 
     elif request.method == "POST":
         data = request.get_json(silent=True)
-        db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
         logger.info("Received WhatsApp Webhook: %s", data)
         
         start_replying(data)

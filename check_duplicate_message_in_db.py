@@ -34,6 +34,7 @@ def start_replying(data):
                         logger.info("Number of matching records: %d", record_count)
 
                         if record_count == 1 or record_count == 0:  # If record count is 1, or 0 (no records)
+                            db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
                             send_whatsapp_message(user_number, "message", owner_phone_number)
                         else:
                             logger.info("Duplicate message received from WhatsApp: %d", record_count)
