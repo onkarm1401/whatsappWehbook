@@ -4,7 +4,7 @@ from date_utils import get_current_ist_time
 # Initialize Firebase connection
 db = initialize_firebase()
 
-def get_owner_information(owner_phone_number, key):
+def get_owner_information(owner_phone_number):
 
     info_query = db.collection("whatsapp-personal-information").where("owner_id", "==", owner_phone_number).stream()
     
