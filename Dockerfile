@@ -8,7 +8,6 @@ WORKDIR /app
 COPY requirements.txt ./
 COPY main.py ./
 COPY whatsapp_utils.py ./
-COPY serviceAccountKey.json ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
