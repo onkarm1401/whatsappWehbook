@@ -18,7 +18,7 @@ def send_whatsapp_message(user_number, message,owner_phone_number,key_value):
         "messaging_product": "whatsapp",
         "to": user_number,
         "text": {
-            "body": "message"
+            "body": message
         }
     }
 
