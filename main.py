@@ -37,12 +37,35 @@ def whatsapp_webhook(request):
                     if "messages" in change.get("value", {}):
                         message = change["value"]["messages"][0]
                         user_number = message["from"]
+                        message_id = message["id"]
                         user_message = message.get("text", {}).get("body", "No text message received")
                         owner_phone_number = change["value"]["metadata"]["phone_number_id"]
 
-                        # Extract and log the message
-                       # extract_and_log_message(sender_id, text, owner_phone_number)
-                        send_whatsapp_message(user_number, "message")
+                        # Save the message to Firestore
+                        db.collection("whatsapp-messages").add({
+                            "owner-id": owner_phone_number,
+                            "user-number": user_number,
+                            "user-message": user_message,
+                            "message-id": message_id,
+                            "created-at": get_current_ist_time()
+                        })
+
+                        # Query Firestore to check if the message is already present
+                        query = db.collection("whatsapp-messages")\
+                                .where("message-id", "==", message_id)\
+                                .where("owner-id", "==", owner_phone_number)\
+                                .limit(1)\
+                                .stream()
+
+                        # Convert the query to a list and check if it has records
+                        record_exists = any(query)
+
+                        if record_exists:
+                            logger.info("Duplicate message received from WhatsApp: %s", data)
+                        else:
+                            send_whatsapp_message(user_number, "message", owner_phone_number)
+
+
 
         return {"status": "received"}, 200
 

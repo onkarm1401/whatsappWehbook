@@ -13,7 +13,7 @@ WHATSAPP_API_URL = "https://graph.facebook.com/v12.0/510167355521515/messages"
 ACCESS_TOKEN = "EAAJH2BRzadUBO7Cpf0cZATVcFSW1gOt2GvYPTSnxMDI7ufj9sOxsDlAdErmJcAZCTkbDRwZCDi1QsBkxvT1g6O6GqYW6QviJGwg3P9VjY81Ex33qxtZAEVVayuomNMI9mBZBJHLVv9yBgWkUmxQXQckBUo0EWbBbySYegLZB6RhcLFHRrUmP00hRGA63KAwI9ITyHzWUwW7PKZB5J5eWY3TQefQDrASAy3vgDQZD"  
 
 
-def send_whatsapp_message(user_number, message):
+def send_whatsapp_message(user_number, message,owner_phone_number):
     """Send a message to the specified recipient using the WhatsApp API."""
     headers = {
         "Content-Type": "application/json",
