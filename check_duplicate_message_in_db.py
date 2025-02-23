@@ -27,19 +27,18 @@ def start_replying(data):
                             "created_at": get_current_ist_time()
                         })
 
-                        # Query Firestore to check if the message is already present
                         query = db.collection("whatsapp-messages")\
                                 .where("message_id", "==", message_id)\
                                 .where("owner_id", "==", owner_phone_number)\
-                                .limit(1)\
-                                .stream()   
+                                .stream()
 
-                        # Convert the query to a list and check if it has records
-                        record_exists = any(query)
-                        logger.info(query)
-                        logger.info(record_exists)
+                        # Count the number of records that match the query
+                        record_count = sum(1 for _ in query)  
 
-                        if record_exists:
-                            logger.info("Duplicate message received from WhatsApp: %s", record_exists)
-                        else:
+                        logger.info("Number of matching records: %d", record_count)
+
+                        if record_count == 1 or record_count == 0:  # If record count is 1, or 0 (no records)
                             send_whatsapp_message(user_number, "message", owner_phone_number)
+                        else:
+                            logger.info("Duplicate message received from WhatsApp: %d", record_count)
+
