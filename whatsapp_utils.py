@@ -37,7 +37,8 @@ def send_whatsapp_message(recipient_id, message):
     }
 
     response = requests.post(WHATSAPP_API_URL, json=payload, headers=headers)
-    initialize_firebase().collection("whatsapp-execution-logs").add({"api-type": "POST","response": response , "created-at": get_current_ist_time()})
+    text_response = response.text
+    initialize_firebase().collection("whatsapp-execution-logs").add({"api-type": "POST","response": text_response , "created-at": get_current_ist_time()})
 
     if response.status_code == 200:
         logger.info(f"Message sent to {recipient_id} : {message}")
