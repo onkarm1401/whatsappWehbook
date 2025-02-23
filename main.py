@@ -4,7 +4,7 @@ import logging
 import requests
 from date_utils  import get_current_ist_time
 from firestore_config import initialize_firebase
-from test_duplicate_records_in_database import start_replying
+from check_duplicate_message_in_db import start_replying
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +31,7 @@ def whatsapp_webhook(request):
         db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
         logger.info("Received WhatsApp Webhook: %s", data)
         
-        start_replying()
+        start_replying(data)
 
         return {"status": "received"}, 200
 
