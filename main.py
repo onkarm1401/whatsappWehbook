@@ -43,19 +43,19 @@ def whatsapp_webhook(request):
 
                         # Save the message to Firestore
                         db.collection("whatsapp-messages").add({
-                            "owner-id": owner_phone_number,
-                            "user-number": user_number,
-                            "user-message": user_message,
-                            "message-id": message_id,
-                            "created-at": get_current_ist_time()
+                            "owner_id": owner_phone_number,
+                            "user_number": user_number,
+                            "user_message": user_message,
+                            "message_id": message_id,
+                            "created_at": get_current_ist_time()
                         })
 
                         # Query Firestore to check if the message is already present
                         query = db.collection("whatsapp-messages")\
-                                .where("message-id", "==", message_id)\
-                                .where("owner-id", "==", owner_phone_number)\
+                                .where("message_id", "==", message_id)\
+                                .where("owner_id", "==", owner_phone_number)\
                                 .limit(1)\
-                                .stream()
+                                .stream()   
 
                         # Convert the query to a list and check if it has records
                         record_exists = any(query)
