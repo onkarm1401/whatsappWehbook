@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def check_record(data):
+def start_replying(data):
     db = initialize_firebase()
     if data and "entry" in data:
             for entry in data["entry"]:
