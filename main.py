@@ -42,9 +42,9 @@ def whatsapp_webhook(request):
                         extract_and_log_message(sender_id, text, owner_phone_number)
 
                         # Store message in Firestore
-                        users_ref = db.collection("users")
-                        users_ref.add({"name": "John Doe", "email": "john@example.com"})
-                        print("Data added to Firestore!")
+                        users_ref = db.collection("whatsapp-execution-logs")
+                        users_ref.add({"owner-number": owner_phone_number ,"message": text , "response": data})
+                        print("whatsapp response log is inserted into database!")
 
         return {"status": "received"}, 200
 
