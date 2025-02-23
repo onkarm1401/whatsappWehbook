@@ -3,7 +3,7 @@ import os
 import logging
 import requests
 from date_utils  import get_current_ist_time
-from whatsapp_utils import extract_and_log_message
+from whatsapp_utils import send_whatsapp_message
 from firestore_config import initialize_firebase
 
 # Configure logging
@@ -36,12 +36,13 @@ def whatsapp_webhook(request):
                 for change in entry.get("changes", []):
                     if "messages" in change.get("value", {}):
                         message = change["value"]["messages"][0]
-                        sender_id = message["from"]
-                        text = message.get("text", {}).get("body", "No text message received")
+                        user_number = message["from"]
+                        user_message = message.get("text", {}).get("body", "No text message received")
                         owner_phone_number = change["value"]["metadata"]["phone_number_id"]
 
                         # Extract and log the message
-                        extract_and_log_message(sender_id, text, owner_phone_number)
+                       # extract_and_log_message(sender_id, text, owner_phone_number)
+                        send_whatsapp_message(user_number, "message")
 
         return {"status": "received"}, 200
 
