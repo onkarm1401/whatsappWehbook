@@ -37,8 +37,6 @@ def start_replying(data):
                         if record_count == 1 or record_count == 0:  # If record count is 1, or 0 (no records)
                             db.collection("whatsapp-execution-logs").add({"api-type": "GET","response": data , "created-at": get_current_ist_time()})
                             
-                            owner_info = get_owner_information(owner_phone_number)
-                            # Assuming get_owner_information(owner_phone_number) returns a dictionary like:
 
                             owner_info = get_owner_information(owner_phone_number)
 
