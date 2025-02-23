@@ -39,6 +39,7 @@ def start_replying(data):
                         })
 
                         owner_info = get_owner_information(owner_phone_number)
+                        logger.info(owner_info)
 
                         if owner_info:
                             linked_phone_number = owner_info.get("linked_phone_number", None)
