@@ -40,8 +40,7 @@ def whatsapp_webhook(request):
                 logger.info("Received WhatsApp Webhook: %s", data)
                 update_data(data)  # Store data globally
                 process_request()
-
-                return {"status": "received"}, 200
+                
             except Exception as e:
                 logger.error(f"Error processing webhook data: {e}")
                 return {"error": "Webhook processing failed"}, 500
