@@ -33,6 +33,39 @@ def process_request():
     except Exception as e:
         logger.error(f"Error processing request: {e}")
 
+def get_owner_information(db):
+    try:
+        query = db.collection('whatsapp-personal-information') \
+            .where('phone_number', '==', get_owner_number()) \
+            .get()
+
+        data_list = [doc.to_dict() for doc in query]
+
+        if data_list:
+            owner_info = data_list[0]
+            update_owner_number(owner_info.get("phone_number", None))
+            update_access_key(owner_info.get("key", None))
+
+    except Exception as e:
+        logger.error(f"Error fetching data for phone number {get_owner_number()}: {e}")
+
+def get_reply_message(db):
+    try:
+        reply_message_collection = db.collection("whatsapp-flow-chart") \
+            .where("owner_phone_number", "==", get_owner_number()) \
+            .where("user_message", "==", get_user_message()) \
+            .limit(1) \
+            .get()
+
+        documents = list(reply_message_collection)
+        if documents:
+            doc_data = documents[0].to_dict()
+            update_owner_reply_message(doc_data.get("reply_message", "No reply found").strip())
+            update_action(doc_data.get("action", "No Action").strip())
+
+    except Exception as e:
+        logger.error(f"Error fetching reply message: {e}")
+
 def extract_response(db):
     """Extracts data from the incoming WhatsApp message."""
     try:
@@ -73,7 +106,7 @@ def extract_response(db):
                                 "created-at": get_current_ist_time()
                             })
                         logger.info(results)
-                        
+
                         return results  # ✅ Return results for checking in `process_request()`
 
     except Exception as e:
