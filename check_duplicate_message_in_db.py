@@ -10,14 +10,27 @@ logger = logging.getLogger(__name__)
 def process_request():
     try:
         db = initialize_firebase()
-        results = extract_response(db)  # Get results from extract_response()
+        results = extract_response(db)  
 
-        if not results:  # If results is empty (no duplicate message)
-            get_owner_information(db)          
+        if not results:
+            get_owner_information(db)
+            get_reply_message(db)
+            
+            response = process_whatsapp_request()
+            
+            if response.get("success", False):
+                logger.info("API executed successfully, stopping execution.")
+                return  
+
+            else:
+                logger.error("API execution failed, stopping further execution.")
+
         else:
-            logger.info("Duplicate message received")
+            logger.info("Duplicate message received, stopping execution.")
+
     except Exception as e:
         logger.error(f"Error processing request: {e}")
+
 
 def extract_response(db):
     try:
@@ -96,8 +109,10 @@ def get_reply_message(db):
         logger.error(f"Error fetching reply message: {e}")
 
 def process_whatsapp_request():
+    """Calls the respective WhatsApp API function dynamically with the required parameters."""
+    
     action = get_action()
-
+    
     function_mapping = {
         "send_whatsapp_message": send_whatsapp_message,
         "mark_message_as_read": mark_message_as_read,
@@ -111,7 +126,17 @@ def process_whatsapp_request():
     if action in function_mapping:
         try:
             logger.info(f"Executing action: {action}")
-            return function_mapping[action]()
+            
+            response = function_mapping[action]()
+            
+            if response.get("success", False):
+                logger.info(f"Action {action} executed successfully, stopping further execution.")
+                return response  
+            
+            else:
+                logger.error(f"Action {action} failed: {response}")
+                return {"success": False, "error": "API execution failed"}
+        
         except Exception as e:
             logger.error(f"Error executing {action}: {e}")
             return {"success": False, "error": str(e)}
