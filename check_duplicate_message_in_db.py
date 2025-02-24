@@ -18,21 +18,16 @@ def start_replying(data):
                     user_message = message.get("text", {}).get("body", "No text message received")
                     owner_phone_number = change["value"]["metadata"]["phone_number_id"]
 
-                    # Save the message to Firestore
                     query = db.collection("whatsapp-messages") \
                         .where("message_id", "==", message_id) \
                         .where("owner_id", "==", owner_phone_number) \
                         .limit(1) \
                         .stream()
-                    logger.info(query)
-
-                    # Convert the stream to a list to count the number of results returned
+                    
                     results = list(query)
                     record_count = len(results)
 
-                    logger.info("Number of matching records: %d", record_count)
-
-                    if record_count == 1 or record_count == 0:  # If record count is 1, or 0 (no records)
+                    if record_count == 1 or record_count == 0:
                         db.collection("whatsapp-execution-logs").add({
                             "api-type": "GET",
                             "response": data,
@@ -46,30 +41,35 @@ def start_replying(data):
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
                             
-                            reply_collection = get_reply_message(db,owner_phone_number,user_message)
-                            for doc in reply_collection:  # Iterate over the result
-                                reply = doc.to_dict().get("reply_message")  # Extract and return reply_message
+                            reply_collection = get_reply_message(db, owner_phone_number, user_message)
+                            reply = None  # Default to None
+                            
+                            for doc in reply_collection:
+                                reply = doc.to_dict().get("reply_message")
+
+                            if reply is None:
+                                reply = "Default reply message."  # Set a fallback message
 
                             try:
                                 response = send_whatsapp_message(user_number, reply, owner_phone_number, key_value)
                                 text_response = response.text
-                                initialize_firebase().collection("whatsapp-execution-logs").add({
+                                db.collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
                                     "response": text_response,
                                     "created-at": get_current_ist_time()
                                 })
                                 if response.status_code == 200:
-                                    logger.info(f"Message sent to {user_number} : {message}")
-                                    users_ref = initialize_firebase().collection("whatsapp-messages")
+                                    logger.info(f"Message sent to {user_number} : {reply}")
+                                    users_ref = db.collection("whatsapp-messages")
                                     users_ref.add({
                                         "owner-number": owner_phone_number,
-                                        "owner-message": message,
+                                        "owner-message": user_message,
                                         "user-number": user_number,
-                                        "user-message": message,
+                                        "user-message": user_message,
                                         "created-date": get_current_ist_time()
                                     })
                             except Exception as e:
-                                logger.error(f"Failed to send message to {user_number}: {response.text}")
+                                logger.error(f"Failed to send message to {user_number}: {str(e)}")
                                     
                         else:
                             logger.error("No information found for the given owner phone number.")
