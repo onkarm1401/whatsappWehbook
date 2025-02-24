@@ -109,6 +109,6 @@ def get_reply_message(db, owner_phone_number, user_message):
     if documents:
         doc_data = documents[0].to_dict()
         reply_message = doc_data.get("reply_message", "No reply found")
-        return reply_message
+        return str(reply_message)
 
     return "No reply found", "No date found"  
