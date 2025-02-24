@@ -127,8 +127,6 @@ def execute_request(api_name, data):
         response.raise_for_status()
         response_data = response.json()
         logger.info(f"{api_name} executed successfully: {response_data}")
-        return {"success": True, "response": response_data}
-
+ 
     except requests.exceptions.RequestException as e:
         logger.error(f"Failed to execute {api_name}: {e}")
-        return {"success": False, "error": str(e)}

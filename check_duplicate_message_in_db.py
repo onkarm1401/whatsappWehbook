@@ -14,17 +14,6 @@ def process_request():
 
         if not results:
             get_owner_information(db)
-            get_reply_message(db)
-            
-            response = process_whatsapp_request()
-            
-            if response.get("success", False):
-                logger.info("API executed successfully, stopping execution.")
-                return  
-
-            else:
-                logger.error("API execution failed, stopping further execution.")
-
         else:
             logger.info("Duplicate message received, stopping execution.")
 
@@ -125,18 +114,10 @@ def process_whatsapp_request():
 
     if action in function_mapping:
         try:
+            
             logger.info(f"Executing action: {action}")
-            
-            response = function_mapping[action]()
-            
-            if response.get("success", False):
-                logger.info(f"Action {action} executed successfully, stopping further execution.")
-                return response  
-            
-            else:
-                logger.error(f"Action {action} failed: {response}")
-                return {"success": False, "error": "API execution failed"}
-        
+            function_mapping[action]()
+                   
         except Exception as e:
             logger.error(f"Error executing {action}: {e}")
             return {"success": False, "error": str(e)}
