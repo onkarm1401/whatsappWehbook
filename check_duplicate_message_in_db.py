@@ -75,7 +75,7 @@ def start_replying(data):
                         logger.info("Duplicate message received from WhatsApp: %d", record_count)
 
 
-def get_owner_information(phone_number):
+def get_owner_information(db,phone_number):
 
     try:
         # Query the database with the condition on phone_number
