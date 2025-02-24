@@ -14,6 +14,9 @@ def process_request():
 
         if not results:
             get_owner_information(db)
+            get_reply_message(db)
+            process_whatsapp_request()
+            
         else:
             logger.info("Duplicate message received, stopping execution.")
 
@@ -72,8 +75,6 @@ def get_owner_information(db):
             update_owner_number(owner_info.get("phone_number", None))
             update_access_key(owner_info.get("key", None))
 
-            get_reply_message(db)
-
     except Exception as e:
         logger.error(f"Error fetching owner information: {e}")
 
@@ -90,8 +91,6 @@ def get_reply_message(db):
             doc_data = documents[0].to_dict()
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
             update_action(str(doc_data.get("action", "No Action")).strip())
-
-            process_whatsapp_request()
 
     except Exception as e:
         logger.error(f"Error fetching reply message: {e}")
