@@ -46,8 +46,12 @@ def start_replying(data):
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
                             
+                            reply_collection = get_reply_message(owner_phone_number,user_message)
+                            for doc in reply_message_collection:  # Iterate over the result
+                                reply = doc.to_dict().get("reply_message")  # Extract and return reply_message
+
                             try:
-                                response = send_whatsapp_message(user_number, "message", owner_phone_number, key_value)
+                                response = send_whatsapp_message(user_number, reply, owner_phone_number, key_value)
                                 text_response = response.text
                                 initialize_firebase().collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
@@ -88,3 +92,14 @@ def get_owner_information(phone_number):
     except Exception as e:
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
         return None  
+
+def get_reply_message(owner_phone_number, user_message):
+    reply_message_collection = db.collection("whatsapp-flow-chart") \
+        .where("owner_phone_number", "==", owner_phone_number) \
+        .where("message", "==", user_message) \
+        .limit(1) \
+        .stream()
+    return reply_message_collection
+   
+    return None  # Return None if no match is found
+
