@@ -43,7 +43,7 @@ def start_replying(data):
 
                             # Fetch reply message and created-date
                             reply_message = get_reply_message(db, owner_phone_number, user_message)
-                            logger.info(f"Reply message: {reply_message}, Created Date: {created_date}")
+                            logger.info(f"Reply message: {reply_message}")
 
                             try:
                                 response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
