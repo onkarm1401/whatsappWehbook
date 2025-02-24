@@ -109,7 +109,7 @@ def process_whatsapp_request():
     }
 
     if action in function_mapping:
-        function_mapping[action]()  # Dynamically call the respective function
+        function_mapping[action]()  
     else:
         logger.error(f"Invalid action specified: {action}")
 
