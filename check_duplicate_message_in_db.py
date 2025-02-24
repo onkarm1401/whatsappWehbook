@@ -41,17 +41,12 @@ def start_replying(data):
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
                             
-                            reply_collection = get_reply_message(db, owner_phone_number, user_message)
-                            reply = None  # Default to None
-                            
-                            for doc in reply_collection:
-                                reply = doc.to_dict().get("reply_message")
-
-                            if reply is None:
-                                reply = "Default reply message."  # Set a fallback message
+                            reply_message = get_reply_message(db, owner_phone_number, user_message)
+                            for doc in reply_message:
+                                return doc.to_dict().get("reply_message", "No reply found")  # Return found message or a default value
 
                             try:
-                                response = send_whatsapp_message(user_number, reply, owner_phone_number, key_value)
+                                response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
                                 text_response = response.text
                                 db.collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
@@ -59,7 +54,7 @@ def start_replying(data):
                                     "created-at": get_current_ist_time()
                                 })
                                 if response.status_code == 200:
-                                    logger.info(f"Message sent to {user_number} : {reply}")
+                                    logger.info(f"Message sent to {user_number} : {reply_message}")
                                     users_ref = db.collection("whatsapp-messages")
                                     users_ref.add({
                                         "owner-number": owner_phone_number,
@@ -93,13 +88,12 @@ def get_owner_information(phone_number):
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
         return None  
 
-def get_reply_message(db,owner_phone_number, user_message):
+def get_reply_message(db, owner_phone_number, user_message):
     reply_message_collection = db.collection("whatsapp-flow-chart") \
         .where("owner_phone_number", "==", owner_phone_number) \
         .where("message", "==", user_message) \
         .limit(1) \
         .stream()
     return reply_message_collection
-   
-    return None  # Return None if no match is found
 
+    return "No reply found"  # Return default if no match is found
