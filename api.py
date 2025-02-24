@@ -2,6 +2,7 @@ import logging
 import requests
 import json
 from global_vars import *
+from firestore_config import initialize_firebase
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -125,6 +126,7 @@ def execute_request(api_name, data):
     try:
         response = requests.post(get_url(), json=data, headers=get_header())
         response_data = response.json()
+        initialize_firebase().
         logger.info(f"{api_name} executed successfully: {response_data}")
  
     except requests.exceptions.RequestException as e:

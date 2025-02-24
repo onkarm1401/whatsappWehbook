@@ -11,15 +11,10 @@ def process_request():
     try:
         db = initialize_firebase()
         results = extract_response(db)  
-
-        if not results:
-            get_owner_information(db)
-            get_reply_message(db)
-            process_whatsapp_request()
-            
-        else:
-            logger.info("Duplicate message received, stopping execution.")
-
+        get_owner_information(db)
+        get_reply_message(db)
+        send_whatsapp_message()
+              
     except Exception as e:
         logger.error(f"Error processing request: {e}")
 
@@ -41,23 +36,6 @@ def extract_response(db):
                         logger.info(f"Updated message ID: {get_message_id()}")
                         logger.info(f"Updated user message: {get_user_message()}")
                         logger.info(f"Updated owner number: {get_owner_number()}")
-
-                        query = db.collection("whatsapp-messages") \
-                            .where("message_id", "==", get_message_id()) \
-                            .where("owner_id", "==", get_owner_number()) \
-                            .limit(1) \
-                            .stream()
-
-                        results = list(query)
-
-                        if not results:
-                            db.collection("whatsapp-execution-logs").add({
-                                "api-type": "GET",
-                                "response": data,
-                                "created-at": get_current_ist_time()
-                            })
-
-                        return results  # Return results to process_request()
 
     except Exception as e:
         logger.error(f"Error extracting response: {e}")
