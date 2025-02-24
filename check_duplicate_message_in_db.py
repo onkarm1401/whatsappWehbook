@@ -47,7 +47,7 @@ def start_replying(data):
                             key_value = owner_info_dict.get("key", None)
                             
                             reply_collection = get_reply_message(db,owner_phone_number,user_message)
-                            for doc in reply_message_collection:  # Iterate over the result
+                            for doc in reply_collection:  # Iterate over the result
                                 reply = doc.to_dict().get("reply_message")  # Extract and return reply_message
 
                             try:
