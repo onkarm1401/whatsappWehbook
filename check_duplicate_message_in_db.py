@@ -99,10 +99,11 @@ def get_reply_message(db, owner_phone_number, user_message):
         .where("owner_phone_number", "==", owner_phone_number) \
         .where("message", "==", user_message) \
         .limit(1) \
-        .stream()
+        .get()
 
     logger.info(reply_message_collection)
     documents = list(reply_message_collection) 
+    logger.info(documents)
 
     if documents:
         doc_data = documents[0].to_dict()
