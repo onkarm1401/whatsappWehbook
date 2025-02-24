@@ -101,12 +101,13 @@ def get_reply_message(db, owner_phone_number, user_message):
         .limit(1) \
         .stream()
 
-    documents = list(reply_message_collection)  # Convert stream to list
+    logger.info(reply_message_collection)
+    documents = list(reply_message_collection) 
 
     if documents:
         doc_data = documents[0].to_dict()
         reply_message = doc_data.get("reply_message", "No reply found")
-        created_date = doc_data.get("created-date", "No date found")  # Fetch created-date field
+        created_date = doc_data.get("created-date", "No date found")  
         return reply_message, created_date
 
-    return "No reply found", "No date found"  # Default values if no match is found
+    return "No reply found", "No date found"  
