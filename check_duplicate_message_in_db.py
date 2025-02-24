@@ -23,7 +23,7 @@ def start_replying(data):
                         .where("owner_id", "==", owner_phone_number) \
                         .limit(1) \
                         .stream()
-                    
+
                     results = list(query)
                     record_count = len(results)
 
@@ -40,22 +40,21 @@ def start_replying(data):
                             owner_info_dict = owner_info[0]
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
-                            
-                            reply_message = get_reply_message(db, owner_phone_number, user_message)
-                            logger.info(reply_message)
-                            for doc in reply_message:
-                                return doc.to_dict().get("reply_message", "No reply found")  # Return found message or a default value
 
-                            logger.info(reply_message)
+                            # Fetch reply message and created-date
+                            reply_message, created_date = get_reply_message(db, owner_phone_number, user_message)
+                            logger.info(f"Reply message: {reply_message}, Created Date: {created_date}")
 
                             try:
                                 response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
                                 text_response = response.text
+
                                 db.collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
                                     "response": text_response,
                                     "created-at": get_current_ist_time()
                                 })
+
                                 if response.status_code == 200:
                                     logger.info(f"Message sent to {user_number} : {reply_message}")
                                     users_ref = db.collection("whatsapp-messages")
@@ -64,11 +63,14 @@ def start_replying(data):
                                         "owner-message": user_message,
                                         "user-number": user_number,
                                         "user-message": user_message,
-                                        "created-date": get_current_ist_time()
+                                        "reply-message": reply_message,  # Store reply message
+                                        "created-date": created_date,  # Store created-date
+                                        "created-at": get_current_ist_time()
                                     })
+
                             except Exception as e:
                                 logger.error(f"Failed to send message to {user_number}: {str(e)}")
-                                    
+
                         else:
                             logger.error("No information found for the given owner phone number.")
                     else:
@@ -86,10 +88,11 @@ def get_owner_information(phone_number):
         # Convert the query results into a list of documents
         data_list = [doc.to_dict() for doc in query]
         return data_list
-    
+
     except Exception as e:
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
         return None  
+
 
 def get_reply_message(db, owner_phone_number, user_message):
     reply_message_collection = db.collection("whatsapp-flow-chart") \
@@ -97,6 +100,13 @@ def get_reply_message(db, owner_phone_number, user_message):
         .where("message", "==", user_message) \
         .limit(1) \
         .stream()
-    return reply_message_collection
 
-    return "No reply found"  # Return default if no match is found
+    documents = list(reply_message_collection)  # Convert stream to list
+
+    if documents:
+        doc_data = documents[0].to_dict()
+        reply_message = doc_data.get("reply_message", "No reply found")
+        created_date = doc_data.get("created-date", "No date found")  # Fetch created-date field
+        return reply_message, created_date
+
+    return "No reply found", "No date found"  # Default values if no match is found
