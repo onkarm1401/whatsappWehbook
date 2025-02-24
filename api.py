@@ -122,12 +122,7 @@ def send_reply_button(button_text, buttons):
     return execute_request("send_reply_button", data)
 
 def execute_request(api_name, data):
-    """Executes the API request and handles errors."""
-    try:
-        response = requests.post(get_url(), json=data, headers=get_header())
-        response_data = response.json()
-        initialize_firebase().
-        logger.info(f"{api_name} executed successfully: {response_data}")
- 
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Failed to execute {api_name}: {e}")
+
+    response = requests.post(get_url(), json=data, headers=get_header())
+    response_data = response.json()
+    logger.info(f"{api_name} executed successfully: {response_data}")
