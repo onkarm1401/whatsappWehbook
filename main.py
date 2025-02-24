@@ -2,7 +2,7 @@ import functions_framework
 import os
 import logging
 import requests
-from date_utils  import get_current_ist_time
+from date_utils import get_current_ist_time
 from firestore_config import initialize_firebase
 from check_duplicate_message_in_db import start_replying
 
@@ -13,25 +13,43 @@ logger = logging.getLogger(__name__)
 @functions_framework.http
 def whatsapp_webhook(request):
     """Handles WhatsApp webhook verification and incoming messages."""
-    db = initialize_firebase()  # Call Firebase only inside this function
+    try:
+        db = initialize_firebase()  # Call Firebase only inside this function
 
-    if request.method == "GET":
-        VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secure_token")
-        mode = request.args.get("hub.mode")
-        token = request.args.get("hub.verify_token")
-        challenge = request.args.get("hub.challenge")
+        if request.method == "GET":
+            try:
+                VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secure_token")
+                mode = request.args.get("hub.mode")
+                token = request.args.get("hub.verify_token")
+                challenge = request.args.get("hub.challenge")
 
-        if mode == "subscribe" and token == VERIFY_TOKEN:
-            logger.info("Webhook verified successfully!")
-            return challenge, 200
-        return {"error": "Invalid verification token"}, 403
+                if mode == "subscribe" and token == VERIFY_TOKEN:
+                    logger.info("Webhook verified successfully!")
+                    return challenge, 200
+                return {"error": "Invalid verification token"}, 403
 
-    elif request.method == "POST":
-        data = request.get_json(silent=True)
-        logger.info("Received WhatsApp Webhook: %s", data)
-        
-        start_replying(data)
+            except Exception as e:
+                logger.error(f"Error during verification: {e}")
+                return {"error": "Verification failed"}, 500
 
-        return {"status": "received"}, 200
+        elif request.method == "POST":
+            try:
+                data = request.get_json(silent=True)
+                if not data:
+                    logger.warning("Received empty data in webhook")
+                    return {"error": "Invalid JSON data"}, 400
 
-    return {"error": "Invalid request method"}, 405
+                logger.info("Received WhatsApp Webhook: %s", data)
+                start_replying(data)
+
+                return {"status": "received"}, 200
+
+            except Exception as e:
+                logger.error(f"Error processing webhook data: {e}")
+                return {"error": "Webhook processing failed"}, 500
+
+        return {"error": "Invalid request method"}, 405
+
+    except Exception as e:
+        logger.critical(f"Unexpected error in webhook: {e}", exc_info=True)
+        return {"error": "Internal server error"}, 500
