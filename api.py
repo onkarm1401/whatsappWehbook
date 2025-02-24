@@ -72,7 +72,8 @@ def extract_response(db):
                                 "response": data,
                                 "created-at": get_current_ist_time()
                             })
-
+                        logger.info(results)
+                        
                         return results  # ✅ Return results for checking in `process_request()`
 
     except Exception as e:
