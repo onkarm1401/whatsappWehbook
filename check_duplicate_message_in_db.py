@@ -46,7 +46,7 @@ def start_replying(data):
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
                             
-                            reply_collection = get_reply_message(owner_phone_number,user_message)
+                            reply_collection = get_reply_message(db,owner_phone_number,user_message)
                             for doc in reply_message_collection:  # Iterate over the result
                                 reply = doc.to_dict().get("reply_message")  # Extract and return reply_message
 
@@ -93,7 +93,7 @@ def get_owner_information(phone_number):
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
         return None  
 
-def get_reply_message(owner_phone_number, user_message):
+def get_reply_message(db,owner_phone_number, user_message):
     reply_message_collection = db.collection("whatsapp-flow-chart") \
         .where("owner_phone_number", "==", owner_phone_number) \
         .where("message", "==", user_message) \
