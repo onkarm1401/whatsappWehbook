@@ -124,7 +124,6 @@ def execute_request(api_name, data):
     """Executes the API request and handles errors."""
     try:
         response = requests.post(get_url(), json=data, headers=get_header())
-        response.raise_for_status()
         response_data = response.json()
         logger.info(f"{api_name} executed successfully: {response_data}")
  
