@@ -40,12 +40,10 @@ def start_replying(data):
                             owner_info_dict = owner_info[0]
                             linked_phone_number = owner_info_dict.get("phone_number", None)
                             key_value = owner_info_dict.get("key", None)
-
-                            # Fetch reply message and created-date
-                            reply_message = get_reply_message(db, owner_phone_number, user_message)
-                            logger.info(f"Reply message: {reply_message}")
-
+                        
                             try:
+                                reply_message = get_reply_message(db, owner_phone_number, user_message)
+                                logger.info(f"Reply message: {reply_message}")
                                 response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
                                 text_response = response.text
 
