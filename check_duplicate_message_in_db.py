@@ -95,8 +95,8 @@ def get_reply_message(db):
         logger.error(f"Error fetching reply message: {e}")
 
 def process_whatsapp_request():
-    """Calls the respective WhatsApp API function dynamically with the required parameters."""
-    
+    action = get_action()
+
     function_mapping = {
         "send_whatsapp_message": send_whatsapp_message,
         "mark_message_as_read": mark_message_as_read,
@@ -107,8 +107,6 @@ def process_whatsapp_request():
         "send_reply_button": send_reply_button,
     }
 
-    action = get_action()
-    
     if action in function_mapping:
         try:
             logger.info(f"Executing action: {action}")
@@ -116,6 +114,6 @@ def process_whatsapp_request():
         except Exception as e:
             logger.error(f"Error executing {action}: {e}")
             return {"success": False, "error": str(e)}
-    else:
-        logger.error(f"Invalid action specified: {action}")
-        return {"success": False, "error": "Invalid action specified"}
+    
+    logger.error(f"Invalid action specified: {action}")
+    return {"success": False, "error": "Invalid action specified"}
