@@ -94,21 +94,19 @@ def get_owner_information(phone_number):
 
 
 def get_reply_message(db, owner_phone_number, user_message):
-    logger.info(owner_phone_number)
-    logger.info(user_message)
-    reply_message_collection = db.collection("whatsapp-flow-chart") \
+
+    try:
+        reply_message_collection = db.collection("whatsapp-flow-chart") \
         .where("owner_phone_number", "==", owner_phone_number) \
         .where("user_message", "==", user_message) \
         .limit(1) \
         .get()
+        
+        documents = list(reply_message_collection) 
+        if documents:
+            doc_data = documents[0].to_dict()
+            reply_message = doc_data.get("reply_message", "No reply found")
+            return str(reply_message)
 
-    logger.info(reply_message_collection)
-    documents = list(reply_message_collection) 
-    logger.info(documents)
-
-    if documents:
-        doc_data = documents[0].to_dict()
-        reply_message = doc_data.get("reply_message", "No reply found")
-        return str(reply_message)
-
-    return "No reply found", "No date found"  
+    except Exception as e:
+        return "No reply found"
