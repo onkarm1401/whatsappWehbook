@@ -12,14 +12,11 @@ def process_request():
         results = extract_response(db)  # Get results from extract_response()
 
         if not results:  # If results is empty (no duplicate message)
-            get_owner_information(db)
-            get_reply_message(db)
-            process_whatsapp_request()
+            get_owner_information(db)          
         else:
             logger.info("Duplicate message received")
     except Exception as e:
         logger.error(f"Error processing request: {e}")
-
 
 def extract_response(db):
     try:
@@ -72,6 +69,9 @@ def get_owner_information(db):
             owner_info = data_list[0]
             update_owner_number(owner_info.get("phone_number", None))
             update_access_key(owner_info.get("key", None))
+
+            get_reply_message(db)
+
     except Exception as e:
         logger.error(f"Error fetching owner information: {e}")
 
@@ -88,6 +88,9 @@ def get_reply_message(db):
             doc_data = documents[0].to_dict()
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
             update_action(str(doc_data.get("action", "No Action")).strip())
+
+            process_whatsapp_request()
+
     except Exception as e:
         logger.error(f"Error fetching reply message: {e}")
 
@@ -116,4 +119,3 @@ def process_whatsapp_request():
     else:
         logger.error(f"Invalid action specified: {action}")
         return {"success": False, "error": "Invalid action specified"}
-
