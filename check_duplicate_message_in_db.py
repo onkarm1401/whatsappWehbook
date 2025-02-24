@@ -101,8 +101,8 @@ def get_reply_message(db, owner_phone_number, user_message):
         documents = list(reply_message_collection) 
         if documents:
             doc_data = documents[0].to_dict()
-            reply_message = doc_data.get("reply_message", "No reply found")
-            return str(reply_message)
+            reply_message = str(doc_data.get("reply_message", "No reply found")).strip()
+            return reply_message
 
     except Exception as e:
         return "No reply found"
