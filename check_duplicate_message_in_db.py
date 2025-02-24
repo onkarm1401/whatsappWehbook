@@ -34,7 +34,7 @@ def start_replying(data):
                             "created-at": get_current_ist_time()
                         })
 
-                        owner_info = get_owner_information(owner_phone_number)
+                        owner_info = get_owner_information(db,owner_phone_number)
 
                         if owner_info:
                             owner_info_dict = owner_info[0]
@@ -62,9 +62,8 @@ def start_replying(data):
                                         "owner-message": user_message,
                                         "user-number": user_number,
                                         "user-message": user_message,
-                                        "reply-message": reply_message,  # Store reply message
-                                        "created-date": created_date,  # Store created-date
-                                        "created-at": get_current_ist_time()
+                                        "reply-message": reply_message, 
+                                        "created-date": get_current_ist_time()
                                     })
 
                             except Exception as e:
@@ -77,8 +76,6 @@ def start_replying(data):
 
 
 def get_owner_information(phone_number):
-    # Initialize Firebase connection
-    db = initialize_firebase()
 
     try:
         # Query the database with the condition on phone_number
@@ -91,7 +88,6 @@ def get_owner_information(phone_number):
     except Exception as e:
         logger.error(f"Error fetching data for phone number {phone_number}: {e}")
         return None  
-
 
 def get_reply_message(db, owner_phone_number, user_message):
 
