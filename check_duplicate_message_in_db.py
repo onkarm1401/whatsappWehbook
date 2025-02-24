@@ -42,8 +42,11 @@ def start_replying(data):
                             key_value = owner_info_dict.get("key", None)
                             
                             reply_message = get_reply_message(db, owner_phone_number, user_message)
+                            logger.info(reply_message)
                             for doc in reply_message:
                                 return doc.to_dict().get("reply_message", "No reply found")  # Return found message or a default value
+
+                            logger.info(reply_message)
 
                             try:
                                 response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
