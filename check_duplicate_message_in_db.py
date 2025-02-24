@@ -9,10 +9,14 @@ logger = logging.getLogger(__name__)
 def process_request():
     try:
         db = initialize_firebase()
-        extract_response(db)
-        get_owner_information(db)
-        get_reply_message(db)
-        process_whatsapp_request()
+        results = extract_response(db)  # Get results from extract_response()
+
+        if not results:  # If results is empty (no duplicate message)
+            get_owner_information(db)
+            get_reply_message(db)
+            process_whatsapp_request()
+        else:
+            logger.info("Duplicate message received")
     except Exception as e:
         logger.error(f"Error processing request: {e}")
 
@@ -30,6 +34,11 @@ def extract_response(db):
                         update_user_message(message.get("text", {}).get("body", "No text message received"))
                         update_owner_number(change["value"]["metadata"]["phone_number_id"])
 
+                        logger.info(f"Updated user number: {get_user_number()}")
+                        logger.info(f"Updated message ID: {get_message_id()}")
+                        logger.info(f"Updated user message: {get_user_message()}")
+                        logger.info(f"Updated owner number: {get_owner_number()}")
+
                         query = db.collection("whatsapp-messages") \
                             .where("message_id", "==", get_message_id()) \
                             .where("owner_id", "==", get_owner_number()) \
@@ -37,14 +46,19 @@ def extract_response(db):
                             .stream()
 
                         results = list(query)
+
                         if not results:
                             db.collection("whatsapp-execution-logs").add({
                                 "api-type": "GET",
                                 "response": data,
                                 "created-at": get_current_ist_time()
                             })
+
+                        return results  # Return results to process_request()
+
     except Exception as e:
         logger.error(f"Error extracting response: {e}")
+        return None  # Return None if an error occurs
 
 def get_owner_information(db):
     try:
