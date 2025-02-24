@@ -20,7 +20,6 @@ def process_request():
     except Exception as e:
         logger.error(f"Error processing request: {e}")
 
-
 def extract_response(db):
     try:
         data = get_data()
@@ -98,7 +97,6 @@ def get_reply_message(db):
         logger.error(f"Error fetching reply message: {e}")
 
 def process_whatsapp_request():
-    """Calls the respective WhatsApp API function dynamically with the required parameters."""
     
     action = get_action()
     
@@ -114,7 +112,7 @@ def process_whatsapp_request():
 
     if action in function_mapping:
         try:
-            
+
             logger.info(f"Executing action: {action}")
             function_mapping[action]()
                    

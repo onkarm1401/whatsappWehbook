@@ -23,19 +23,19 @@ def send_whatsapp_message():
     data = {
         "messaging_product": "whatsapp",
         "to": get_user_number(),
-        "text": {"body": get_reply_message()}
+        "text": {"body": get_owner_reply_message()}
     }
 
     return execute_request("send_whatsapp_message", data)
 
 def mark_message_as_read():
     """Marks a message as read."""
-    logger.info(f"Marking message {get_reply_message()} as read")
+    logger.info(f"Marking message {get_message_id()} as read")
 
     data = {
         "messaging_product": "whatsapp",
         "status": "read",
-        "message_id": get_reply_message()
+        "message_id": get_message_id()
     }
 
     return execute_request("mark_message_as_read", data)
