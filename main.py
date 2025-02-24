@@ -1,12 +1,11 @@
 import functions_framework
 import os
 import logging
-import requests
 from date_utils import get_current_ist_time
 from firestore_config import initialize_firebase
-from check_duplicate_message_in_db import start_replying
+from check_duplicate_message_in_db import process_request
+from global_vars import update_data
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -14,7 +13,7 @@ logger = logging.getLogger(__name__)
 def whatsapp_webhook(request):
     """Handles WhatsApp webhook verification and incoming messages."""
     try:
-        db = initialize_firebase()  # Call Firebase only inside this function
+        db = initialize_firebase()
 
         if request.method == "GET":
             try:
@@ -27,7 +26,6 @@ def whatsapp_webhook(request):
                     logger.info("Webhook verified successfully!")
                     return challenge, 200
                 return {"error": "Invalid verification token"}, 403
-
             except Exception as e:
                 logger.error(f"Error during verification: {e}")
                 return {"error": "Verification failed"}, 500
@@ -40,16 +38,15 @@ def whatsapp_webhook(request):
                     return {"error": "Invalid JSON data"}, 400
 
                 logger.info("Received WhatsApp Webhook: %s", data)
-                start_replying(data)
+                update_data(data)  # Store data globally
+                process_request()
 
                 return {"status": "received"}, 200
-
             except Exception as e:
                 logger.error(f"Error processing webhook data: {e}")
                 return {"error": "Webhook processing failed"}, 500
 
         return {"error": "Invalid request method"}, 405
-
     except Exception as e:
         logger.critical(f"Unexpected error in webhook: {e}", exc_info=True)
         return {"error": "Internal server error"}, 500
