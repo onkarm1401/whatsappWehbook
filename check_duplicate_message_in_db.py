@@ -97,8 +97,8 @@ def get_reply_message(db, owner_phone_number, user_message):
 
     try:
         reply_message_collection = db.collection("whatsapp-flow-chart") \
-        .where("owner_phone_number", "==", owner_phone_number) \
-        .where("user_message", "==", user_message) \
+        .where("owner_phone_number", "==", str(owner_phone_number)) \
+        .where("user_message", "==", str(user_message)) \
         .limit(1) \
         .get()
         
