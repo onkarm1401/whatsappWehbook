@@ -42,7 +42,7 @@ def start_replying(data):
                             key_value = owner_info_dict.get("key", None)
 
                             # Fetch reply message and created-date
-                            reply_message, created_date = get_reply_message(db, owner_phone_number, user_message)
+                            reply_message = get_reply_message(db, owner_phone_number, user_message)
                             logger.info(f"Reply message: {reply_message}, Created Date: {created_date}")
 
                             try:
@@ -95,9 +95,11 @@ def get_owner_information(phone_number):
 
 
 def get_reply_message(db, owner_phone_number, user_message):
+    logger.info(owner_phone_number)
+    logger.info(user_message)
     reply_message_collection = db.collection("whatsapp-flow-chart") \
         .where("owner_phone_number", "==", owner_phone_number) \
-        .where("message", "==", user_message) \
+        .where("user_message", "==", user_message) \
         .limit(1) \
         .get()
 
@@ -108,7 +110,6 @@ def get_reply_message(db, owner_phone_number, user_message):
     if documents:
         doc_data = documents[0].to_dict()
         reply_message = doc_data.get("reply_message", "No reply found")
-        created_date = doc_data.get("created-date", "No date found")  
-        return reply_message, created_date
+        return reply_message
 
     return "No reply found", "No date found"  
