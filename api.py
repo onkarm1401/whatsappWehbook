@@ -87,11 +87,6 @@ def extract_response(db):
                         update_user_message(message.get("text", {}).get("body", "No text message received"))
                         update_owner_number(change["value"]["metadata"]["phone_number_id"])
 
-                        logger.info(f"Updated user number: {get_user_number()}")
-                        logger.info(f"Updated message ID: {get_message_id()}")
-                        logger.info(f"Updated user message: {get_user_message()}")
-                        logger.info(f"Updated owner number: {get_owner_number()}")
-
                         query = db.collection("whatsapp-messages") \
                             .where("message_id", "==", get_message_id()) \
                             .where("owner_id", "==", get_owner_number()) \
