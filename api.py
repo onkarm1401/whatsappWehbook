@@ -11,6 +11,7 @@ logger.setLevel(logging.INFO)
 
 
 def send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value):
+    logger.info(user_number, reply_message, owner_phone_number, key_value)
 
     WHATSAPP_API_URL = f"https://graph.facebook.com/v12.0/{owner_phone_number}/messages"
 

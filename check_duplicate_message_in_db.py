@@ -46,6 +46,7 @@ def start_replying(data):
                                 logger.info(f"Reply message: {reply_message}")
                                 response = send_whatsapp_message(user_number, reply_message, owner_phone_number, key_value)
                                 text_response = response.text
+                                logger.info(text_response)
 
                                 db.collection("whatsapp-execution-logs").add({
                                     "api-type": "POST",
