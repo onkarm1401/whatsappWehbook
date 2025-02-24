@@ -1,7 +1,7 @@
 import logging
 import requests
 import json
-from global_vars import get_user_number, get_owner_number, get_message_id, get_user_message, get_access_key
+from global_vars import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
