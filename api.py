@@ -48,6 +48,6 @@ def send_image_message():
         "recipient_type": "individual",
         "to": get_user_number(),
         "type": "image",
-        "image": {"link": get_owner_reply_message}
+        "image": {"link": get_owner_reply_message()}
     }
     return execute_request("send_image_message", data)

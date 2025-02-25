@@ -63,10 +63,10 @@ def process_request():
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
             update_action(str(doc_data.get("action", "No Action")).strip())
 
-            selectio_of_api()
+            selection_of_api()
 
 
-def selectio_of_api():
+def selection_of_api():
     FUNCTION_MAPPING = {
         "send_whatsapp_message": send_whatsapp_message,
         "send_image_message":send_image_message
