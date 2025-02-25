@@ -1,7 +1,6 @@
 import logging
 import sys
 
-# Configure logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -19,7 +18,7 @@ status = None
 def update_status():
     global status
     status = "COMPLETED"
-    logger.info(f"Status is updated to completed: {get_message_id()}")
+    logger.info(f"Status updated to COMPLETED for message ID: {get_message_id()}")
 
 def get_status():
     return status
