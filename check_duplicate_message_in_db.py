@@ -12,6 +12,8 @@ def process_request():
     get_owner_information(db)
     get_reply_message(db)
     send_whatsapp_message()
+    
+    return
 
 def extract_response(db):
     data = get_data()

@@ -1,4 +1,5 @@
 import logging
+import sys
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -19,7 +20,6 @@ def update_status():
     global status
     status = "COMPLETED"
     logger.info(f"Status is updated to completed: {get_message_id()}")
-    sys.exit() 
 
 def get_status():
     return status
