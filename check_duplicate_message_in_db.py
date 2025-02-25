@@ -58,20 +58,11 @@ def get_reply_message(db):
 def process_whatsapp_request():
     action = get_action()
 
-    function_mapping = {
-        "send_whatsapp_message": send_whatsapp_message,
-        "mark_message_as_read": mark_message_as_read,
-        "send_text_message": send_text_message,
-        "send_reply_to_message": send_reply_to_message,
-        "send_image_message": send_image_message,
-        "send_list_message": send_list_message,
-        "send_reply_button": send_reply_button,
-    }
-
-    if action in function_mapping:
-        function_mapping[action]()  
+    if action == "send_whatsapp_message":
+        send_whatsapp_message()
     else:
         logger.error(f"Invalid action specified: {action}")
+
 
 def get_message_id_from_response(db, data):
     if not data or "entry" not in data:
