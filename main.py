@@ -39,15 +39,5 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_status()}")
 
 
-        new_msg_id = get_message_id_from_response(db, get_data())
-        logger.info(f"new_msg_id: {new_msg_id}")
-        logger.info(f"old emessage id: {get_message_id()}")
+        process_request()
 
-        if new_msg_id != get_message_id():
-            process_request()
-        else:
-            logger.info("Duplicate message is detected")
-
-        return {"status": "success"}, 200
-
-    return {"error": "Invalid request method"}, 405
