@@ -9,7 +9,7 @@ from global_vars import *
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@functions_framework.http
+@functions_framework.httpdef 
 def whatsapp_webhook(request):
     db = initialize_firebase()
 
@@ -22,22 +22,24 @@ def whatsapp_webhook(request):
         if mode == "subscribe" and token == VERIFY_TOKEN:
             logger.info("Webhook verified successfully!")
             return challenge, 200
+
         return {"error": "Invalid verification token"}, 403
 
     elif request.method == "POST":
         data = request.get_json(silent=True)
+
         if not data:
             logger.warning("Received empty data in webhook")
             return {"error": "Invalid JSON data"}, 400
 
-        logger.info("Received WhatsApp Webhook: %s", data)
+        logger.info(f"Received WhatsApp Webhook: {data}")
         update_data(data)
-        logger.info(f"starting : {get_message_id()}")
-        logger.info(f"starting: {get_owner_number()}")
-        logger.info(f"starting: {get_user_message()}")
-        logger.info(f"starting: {get_user_number()}")
-        logger.info(f"starting: {get_status()}")
 
+        if get_status() == "COMPLETED":
+            logger.info("Processing already completed. Stopping execution.")
+            return {"status": "Already completed"}, 200  # ✅ Proper HTTP response
 
         process_request()
+        return {"status": "Processed successfully"}, 200  # ✅ Proper response after execution
 
+    return {"error": "Invalid request method"}, 405  # ✅ Handle unsupported HTTP methods
