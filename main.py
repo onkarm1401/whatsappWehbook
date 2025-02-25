@@ -56,6 +56,7 @@ def whatsapp_webhook(request):
             return {"status": "Already completed"}, 200
 
         # Step 2: Save the incoming message before processing
+        update_status("PENDING")
         update_data(data)
         update_api_execution_log()
 

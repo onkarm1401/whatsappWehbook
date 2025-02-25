@@ -24,9 +24,9 @@ def update_button_menu_option(new_button_options):
 def get_button_menu_options():
     return send_button_menu_options
 
-def update_status():
+def update_status(changed_status):
     global status
-    status = "COMPLETED"
+    status = changed_status
     logger.info(f"Status updated to COMPLETED for message ID: {get_message_id()}")
 
 def get_status():

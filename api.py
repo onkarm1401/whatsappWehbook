@@ -41,7 +41,7 @@ def execute_request(api_name, data):
         logger.info(f"{api_name} executed successfully: {response_data}")
         
         mark_message_as_read()
-        update_status()
+        update_status("COMPLETED")
         return {"status": "success", "response": response_data}
     
     except requests.RequestException as e:
