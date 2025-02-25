@@ -63,8 +63,19 @@ def process_request():
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
             update_action(str(doc_data.get("action", "No Action")).strip())
 
-            if get_action() == "send_whatsapp_message":
-                mark_message_as_read()
-                send_whatsapp_message()
-            else:
-                logger.error(f"Invalid action specified: {get_action()}")
+            selectio_of_api()
+
+
+def selectio_of_api():
+    FUNCTION_MAPPING = {
+        "send_whatsapp_message": send_whatsapp_message  # ✅ Corrected
+    }
+    
+    api_function = FUNCTION_MAPPING.get(get_action())  # Get the function reference
+    
+    if api_function:
+        response = api_function()  # ✅ Call the function here
+        return {"status": "success", "response": response}
+    else:
+        return {"status": "error", "message": "Invalid option selected"}
+
