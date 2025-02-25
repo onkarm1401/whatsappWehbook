@@ -14,7 +14,15 @@ action = None
 message_id = None
 data = None
 status = None
+send_button_menu_options =None
 
+def update_button_menu_option(new_button_options):
+    global send_button_menu_options
+    send_button_menu_options = new_button_options
+
+def get_button_menu_options():
+    return send_button_menu_options
+    
 def update_status():
     global status
     status = "COMPLETED"

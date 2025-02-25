@@ -61,6 +61,8 @@ def process_request():
 
             doc_data = documents[0].to_dict()
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
+            update_button_menu_option(str(doc_data.get("button_menu_option")).strip())
+
             update_action(str(doc_data.get("action", "No Action")).strip())
 
             selection_of_api()
@@ -69,7 +71,10 @@ def process_request():
 def selection_of_api():
     FUNCTION_MAPPING = {
         "send_whatsapp_message": send_whatsapp_message,
-        "send_image_message":send_image_message
+        "send_image_message":send_image_message,
+        "send_youtube_video":send_youtube_video,
+        "send_reply_to_message":send_reply_to_message,
+        "send_button_menu":send_button_menu
     }
     
     api_function = FUNCTION_MAPPING.get(get_action())  
