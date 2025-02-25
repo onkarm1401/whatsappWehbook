@@ -59,7 +59,7 @@ def send_youtube_video():
     "messaging_product": "whatsapp",
     "to": get_user_number(),
     "text": {
-        "preview_url": true,
+        "preview_url": True,
         "body": get_owner_reply_message()
     }}
     return execute_request("send_youtube_video",data)
