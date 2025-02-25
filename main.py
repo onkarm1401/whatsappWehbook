@@ -3,7 +3,7 @@ import os
 import logging
 from date_utils import get_current_ist_time
 from firestore_config import initialize_firebase
-from check_duplicate_message_in_db import process_request
+from check_duplicate_message_in_db import *
 from global_vars import *
 
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,8 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_user_number()}")
         logger.info(f"starting: {get_status()}")
 
-        if get_status() != "COMPLETED":
+        occurance = check_duplicate_message_id()
+        if occurance == "NO":
             process_request()
         else:
             logger.info("Duplicate message is detected")

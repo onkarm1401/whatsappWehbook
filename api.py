@@ -3,6 +3,7 @@ import requests
 import json
 from global_vars import *
 from firestore_config import initialize_firebase
+from date_utils import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -113,11 +114,19 @@ def send_reply_button(button_text, buttons):
     return execute_request("send_reply_button", data)
 
 def execute_request(api_name, data):
+    db=initialize_firebase()
   
     response = requests.post(get_url(), json=data, headers=get_header())
     response_data = response.json()
         
-    update_status()  
+    update_status()
+
+    db.collection("whatsapp-messages").add({
+        "created-date": get_current_ist_time(),
+        "owner-message": get_user_number(),  
+        "owner-number": get_owner_number(),
+        "reply-message": get_owner_reply_message()
+    })
     logger.info(f"{api_name} executed successfully: {response_data}")
     
     return
