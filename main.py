@@ -34,8 +34,23 @@ def whatsapp_webhook(request):
 
         logger.info(f"Received WhatsApp Webhook: {data}")
 
-        # Step 1: Check if message has already been processed
-        if get_status() == "COMPLETED":
+        new_msg_id = None  # Initialize the message ID
+
+        for entry in data.get("entry", []):
+            for change in entry.get("changes", []):
+                messages = change.get("value", {}).get("messages", [])
+                if messages:
+                    new_msg_id = messages[0]["id"]  # Assuming only one message per request
+                    break  # Stop loop after finding the first message
+        
+        if not new_msg_id:
+            logger.warning("No messages found in webhook response")
+            return {"error": "No messages found"}, 400
+
+        # Step 1: Check if the message has already been processed
+        last_processed_msg_id = get_message_id()  # Function to fetch the last processed message ID
+        
+        if new_msg_id == last_processed_msg_id:
             logger.info("Processing already completed. Stopping execution.")
             return {"status": "Already completed"}, 200
 
@@ -45,7 +60,7 @@ def whatsapp_webhook(request):
 
         # Step 3: Process the request synchronously
         try:
-            process_request()  # This function should execute completely before proceeding
+            process_request()  # Ensure this runs synchronously
             logger.info("Request processed successfully.")
             return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
         except Exception as e:
