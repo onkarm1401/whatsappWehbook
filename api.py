@@ -113,12 +113,11 @@ def send_reply_button(button_text, buttons):
     return execute_request("send_reply_button", data)
 
 def execute_request(api_name, data):
-    if get_status() != "COMPLETED":
-        response = requests.post(get_url(), json=data, headers=get_header())
-        response_data = response.json()
+  
+    response = requests.post(get_url(), json=data, headers=get_header())
+    response_data = response.json()
         
-        update_status()  
-        logger.info(f"{api_name} executed successfully: {response_data}")
-            
-    logger.info(f"{api_name} execution skipped as status is already COMPLETED.")
+    update_status()  
+    logger.info(f"{api_name} executed successfully: {response_data}")
+    
     return

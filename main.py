@@ -38,7 +38,10 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_user_number()}")
         logger.info(f"starting: {get_status()}")
 
-        process_request()
+        if get_status() != "COMPLETED":
+            process_request()
+        else:
+            logger.info("Duplicate message is detected")
 
         return {"status": "success"}, 200
 
