@@ -13,6 +13,15 @@ access_key = None
 action = None
 message_id = None
 data = None
+staus = None
+
+def update_status():
+    global status
+    status = "COMPLETED"
+    logger.info(f"Status is updated to completed: {get_message_id()}")
+
+def get_status():
+    return status
 
 def update_data(new_data):
     global data  
