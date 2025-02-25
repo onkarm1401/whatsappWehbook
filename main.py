@@ -9,7 +9,7 @@ from global_vars import *
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@functions_framework.httpdef 
+@functions_framework.http 
 def whatsapp_webhook(request):
     db = initialize_firebase()
 
