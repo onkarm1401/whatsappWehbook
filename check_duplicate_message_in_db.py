@@ -74,7 +74,7 @@ def check_duplicate_message_id():
     db = initialize_firebase()
     query = db.collection("whatsapp-messages") \
         .where("message_id", "==", get_message_id()) \
-        .where("user-number", "==", get_user_number()) \
+        .where("user_number", "==", get_user_number()) \
         .limit(1) \
         .get()
 
