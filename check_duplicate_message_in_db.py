@@ -68,13 +68,14 @@ def process_request():
 
 def selectio_of_api():
     FUNCTION_MAPPING = {
-        "send_whatsapp_message": send_whatsapp_message  # ✅ Corrected
+        "send_whatsapp_message": send_whatsapp_message,
+        "send_image_message":send_image_message
     }
     
-    api_function = FUNCTION_MAPPING.get(get_action())  # Get the function reference
+    api_function = FUNCTION_MAPPING.get(get_action())  
     
     if api_function:
-        response = api_function()  # ✅ Call the function here
+        response = api_function()
         return {"status": "success", "response": response}
     else:
         return {"status": "error", "message": "Invalid option selected"}
