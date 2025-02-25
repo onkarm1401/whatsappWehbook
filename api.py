@@ -118,12 +118,6 @@ def send_reply_button(button_text, buttons):
 
     return execute_request("send_reply_button", data)
 
-import requests
-import logging
-from global_vars import get_status, update_status, get_url, get_header
-
-logger = logging.getLogger(__name__)
-
 def execute_request(api_name, data):
     if get_status() == "COMPLETED":
         logger.info(f"{api_name} execution skipped as status is already COMPLETED.")
