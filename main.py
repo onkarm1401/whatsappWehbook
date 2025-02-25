@@ -36,6 +36,8 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_owner_number()}")
         logger.info(f"starting: {get_user_message()}")
         logger.info(f"starting: {get_user_number()}")
+        logger.info(f"starting: {get_status()}")
+
         process_request()
 
         return {"status": "success"}, 200
