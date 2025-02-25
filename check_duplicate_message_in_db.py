@@ -64,6 +64,7 @@ def process_request():
             update_action(str(doc_data.get("action", "No Action")).strip())
 
             if get_action() == "send_whatsapp_message":
+                mark_message_as_read()
                 send_whatsapp_message()
             else:
                 logger.error(f"Invalid action specified: {get_action()}")

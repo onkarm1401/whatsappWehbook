@@ -33,4 +33,10 @@ def execute_request(api_name, data):
 
     logger.info(f"{api_name} executed successfully: {response_data}")
 
-
+def mark_message_as_read():
+    logger.info(f"Marking message {get_message_id()} as read")
+    data = {
+        "messaging_product": "whatsapp",
+        "status": "read",
+        "message_id": get_message_id()}
+    response = execute_request("mark_message_as_read", data)
