@@ -19,6 +19,7 @@ def update_status():
     global status
     status = "COMPLETED"
     logger.info(f"Status is updated to completed: {get_message_id()}")
+    sys.exit() 
 
 def get_status():
     return status

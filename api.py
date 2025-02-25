@@ -121,4 +121,4 @@ def execute_request(api_name, data):
         logger.info(f"{api_name} executed successfully: {response_data}")
             
     logger.info(f"{api_name} execution skipped as status is already COMPLETED.")
-    return None
+    return
