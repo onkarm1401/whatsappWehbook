@@ -35,7 +35,7 @@ def update_api_execution_log():
 
     try:
         # ✅ Ensure Firestore operation completes before returning
-        doc_ref = db.collection("API-EXECUTION-LOG").document().set(message_data)
+        doc_ref = db.collection("api-execution-log").document().set(message_data)
         logger.info("API Execution Log added successfully")
         return {"status": "success"}
     except Exception as e:
