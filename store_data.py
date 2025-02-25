@@ -22,6 +22,7 @@ def add_message_to_firestore():
         doc_ref = db.collection("whatsapp-messages").add(message_data)
         logger.info(f"Message document added successfully: {doc_ref}")
         logger.info("added message information database for whatsapp-messages")
+        return 
     except Exception as e:
         logger.error(f"Error adding message to Firestore: {e}")
         return {"status": "error", "details": str(e)}
