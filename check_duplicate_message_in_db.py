@@ -61,7 +61,8 @@ def process_request():
 
             doc_data = documents[0].to_dict()
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
-            update_button_menu_option((doc_data.get("button_menu_option")).strip()).replace("\\", "")
+            button_menu_option = str(doc_data.get("button_menu_option", "")).strip().replace("\\", "")
+            update_button_menu_option(button_menu_option)
 
             update_action(str(doc_data.get("action", "No Action")).strip())
 
