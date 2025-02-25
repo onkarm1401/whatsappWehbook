@@ -14,7 +14,6 @@ def process_request():
     get_reply_message(db)
     process_whatsapp_request()
 
-    return
 
 def extract_response(db):
     logger.info("inside extract response")
@@ -28,8 +27,7 @@ def extract_response(db):
                     update_user_number(message["from"])
                     update_message_id(message["id"])
                     update_user_message(message.get("text", {}).get("body", "No text message received"))
-                    update_owner_number(change["value"]["metadata"]["phone_number_id"])
-    return
+                    update_owner_number(change["value"]["metadata"]["phone_number_id"]
 
 def get_owner_information(db):
     logger.info("inside get owner")
@@ -42,7 +40,7 @@ def get_owner_information(db):
         owner_info = data_list[0]
         update_owner_number(owner_info.get("phone_number", None))
         update_access_key(owner_info.get("key", None))
-    return
+    
 
 def get_reply_message(db):
     logger.info("inside get reply message")
@@ -57,7 +55,7 @@ def get_reply_message(db):
         doc_data = documents[0].to_dict()
         update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
         update_action(str(doc_data.get("action", "No Action")).strip())
-    return
+    
 
 def process_whatsapp_request():
     logger.info("inside whatsapp request")
@@ -78,7 +76,5 @@ def get_message_id_from_response(db, data):
             messages = change.get("value", {}).get("messages", [])
             if messages:
                 return messages[0].get("id")  
-
-    return None  
 
 

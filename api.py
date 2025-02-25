@@ -113,6 +113,8 @@ def send_reply_button(button_text, buttons):
 
     return execute_request("send_reply_button", data)
 
+import sys
+
 def execute_request(api_name, data):
     logger.info("inside sending message")
     db=initialize_firebase()
@@ -129,3 +131,4 @@ def execute_request(api_name, data):
         "reply-message": get_owner_reply_message()
     })
     logger.info(f"{api_name} executed successfully: {response_data}")
+    sys.exit()
