@@ -38,8 +38,10 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_user_number()}")
         logger.info(f"starting: {get_status()}")
 
-        occurance = check_duplicate_message_id(db)
-        if occurance == "NO":
+        extract_response(db)
+        new_msg_id = get_message_id_from_response(db,data)
+
+        if new_msg_id != get_message_id:
             process_request()
         else:
             logger.info("Duplicate message is detected")

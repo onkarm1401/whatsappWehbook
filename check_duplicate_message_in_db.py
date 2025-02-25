@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def process_request():
     db = initialize_firebase()
-    results = extract_response(db)
+    extract_response(db)
     get_owner_information(db)
     get_reply_message(db)
     process_whatsapp_request()
@@ -27,6 +27,7 @@ def extract_response(db):
                     update_message_id(message["id"])
                     update_user_message(message.get("text", {}).get("body", "No text message received"))
                     update_owner_number(change["value"]["metadata"]["phone_number_id"])
+    return
 
 def get_owner_information(db):
     query = db.collection('whatsapp-personal-information') \
@@ -38,6 +39,7 @@ def get_owner_information(db):
         owner_info = data_list[0]
         update_owner_number(owner_info.get("phone_number", None))
         update_access_key(owner_info.get("key", None))
+    return
 
 def get_reply_message(db):
     reply_message_collection = db.collection("whatsapp-flow-chart") \
@@ -51,6 +53,7 @@ def get_reply_message(db):
         doc_data = documents[0].to_dict()
         update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
         update_action(str(doc_data.get("action", "No Action")).strip())
+    return
 
 def process_whatsapp_request():
     action = get_action()
@@ -70,14 +73,16 @@ def process_whatsapp_request():
     else:
         logger.error(f"Invalid action specified: {action}")
 
-def check_duplicate_message_id(db):
-    query = db.collection("whatsapp-messages") \
-        .where("message_id", "==", get_message_id()) \
-        .where("user_number", "==", get_user_number()) \
-        .limit(1) \
-        .stream()
-    
-    results = list(query)
-    
-    return "YES" if results else "NO"
+def get_message_id_from_response(db, data):
+    if not data or "entry" not in data:
+        return None
+
+    for entry in data["entry"]:
+        for change in entry.get("changes", []):
+            messages = change.get("value", {}).get("messages", [])
+            if messages:
+                return messages[0].get("id")  
+
+    return None  
+
 
