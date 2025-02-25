@@ -38,7 +38,7 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_user_number()}")
         logger.info(f"starting: {get_status()}")
 
-        occurance = check_duplicate_message_id()
+        occurance = check_duplicate_message_id(db)
         if occurance == "NO":
             process_request()
         else:

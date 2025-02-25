@@ -70,7 +70,7 @@ def process_whatsapp_request():
     else:
         logger.error(f"Invalid action specified: {action}")
 
-def check_duplicate_message_id():
+def check_duplicate_message_id(db):
     query = db.collection("whatsapp-messages") \
         .filter("message_id", "==", get_message_id()) \
         .filter("user_number", "==", get_user_number()) \
