@@ -13,7 +13,7 @@ access_key = None
 action = None
 message_id = None
 data = None
-staus = None
+status = None
 
 def update_status():
     global status

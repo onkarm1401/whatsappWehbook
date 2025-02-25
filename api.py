@@ -7,7 +7,7 @@ from firestore_config import initialize_firebase
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-API_VERSION = "v12.0"
+API_VERSION = "v22.0"
 
 def get_url():
     return f"https://graph.facebook.com/{API_VERSION}/{get_owner_number()}/messages"
