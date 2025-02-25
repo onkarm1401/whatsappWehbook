@@ -86,7 +86,8 @@ def send_button_menu():
         "interactive": {
             "type": "button",
             "body": {"text": get_owner_reply_message()},
-            "action": {"buttons": get_button_menu_options()}
+            "action": get_button_menu_options()
         }
     }
+    logger.info(data)
     return execute_request("send_reply_button", data)
