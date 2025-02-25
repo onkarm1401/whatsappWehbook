@@ -12,7 +12,7 @@ logger.setLevel(logging.INFO)
 API_VERSION = "v22.0"
 
 def get_url():
-    return f"https://graph.facebook.com/{API_VERSION}/{owner_number}/messages"
+    return f"https://graph.facebook.com/{API_VERSION}/{get_owner_number()}/messages"
 
 def get_header():
     access_key = get_access_key()
