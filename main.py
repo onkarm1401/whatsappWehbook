@@ -5,6 +5,7 @@ from date_utils import get_current_ist_time
 from firestore_config import initialize_firebase
 from check_duplicate_message_in_db import update_data, get_status, process_request
 from global_vars import *
+from store_data import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
