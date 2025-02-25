@@ -32,6 +32,7 @@ def execute_request(api_name, data):
     update_status()  
 
     logger.info(f"{api_name} executed successfully: {response_data}")
+    return mark_message_as_read()
 
 def mark_message_as_read():
     logger.info(f"Marking message {get_message_id()} as read")
