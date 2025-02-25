@@ -38,13 +38,14 @@ def whatsapp_webhook(request):
         logger.info(f"starting: {get_user_number()}")
         logger.info(f"starting: {get_status()}")
 
-        extract_response(db)
-        new_msg_id = get_message_id_from_response(db,data)
 
-        if new_msg_id != get_message_id:
+        new_msg_id = get_message_id_from_response(db, get_data())  # Ensure data is passed
+
+        if new_msg_id != get_message_id():  # Correct function call
             process_request()
         else:
             logger.info("Duplicate message is detected")
+
 
         return {"status": "success"}, 200
 
