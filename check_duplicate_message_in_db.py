@@ -14,14 +14,14 @@ def process_request():
 
     if not data or "entry" not in data:
         logger.error("No valid data received in webhook.")
-        return
+        return None
 
     for entry in data["entry"]:
         for change in entry.get("changes", []):
             messages = change.get("value", {}).get("messages", [])
             if not messages:
                 logger.warning("No messages found in webhook response")
-                return  
+                return  None
 
             message = messages[0]
 
@@ -42,7 +42,7 @@ def process_request():
             data_list = [doc.to_dict() for doc in query]
             if not data_list:
                 logger.error("Owner information not found")
-                return  
+                return  None
 
             owner_info = data_list[0]
             update_owner_number(owner_info.get("phone_number", None))
@@ -57,7 +57,7 @@ def process_request():
             documents = list(reply_message_collection)
             if not documents:
                 logger.error("No reply message found")
-                return  
+                return  None
 
             doc_data = documents[0].to_dict()
             update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
