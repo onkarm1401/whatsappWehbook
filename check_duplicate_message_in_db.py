@@ -10,9 +10,10 @@ def process_request():
     logger.info("inside process request")
     db = initialize_firebase()
     extract_response(db)
-    get_owner_information(db)
-    get_reply_message(db)
-    process_whatsapp_request()
+   # get_owner_information(db)
+  #  get_reply_message(db)
+ #   process_whatsapp_request()
+
 
 
 def extract_response(db):
@@ -27,7 +28,8 @@ def extract_response(db):
                     update_user_number(message["from"])
                     update_message_id(message["id"])
                     update_user_message(message.get("text", {}).get("body", "No text message received"))
-                    update_owner_number(change["value"]["metadata"]["phone_number_id"]
+                    update_owner_number(change["value"]["metadata"]["phone_number_id"])
+                    get_owner_information()
 
 def get_owner_information(db):
     logger.info("inside get owner")
@@ -40,6 +42,7 @@ def get_owner_information(db):
         owner_info = data_list[0]
         update_owner_number(owner_info.get("phone_number", None))
         update_access_key(owner_info.get("key", None))
+        get_reply_message()
     
 
 def get_reply_message(db):
@@ -55,6 +58,7 @@ def get_reply_message(db):
         doc_data = documents[0].to_dict()
         update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
         update_action(str(doc_data.get("action", "No Action")).strip())
+        process_whatsapp_request()
     
 
 def process_whatsapp_request():
