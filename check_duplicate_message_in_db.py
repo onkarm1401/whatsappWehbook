@@ -67,6 +67,8 @@ def process_request():
             update_action(str(doc_data.get("action", "No Action")).strip())
 
             selection_of_api()
+            add_message_to_firestore()
+            return {"status": "success"}
 
 
 def selection_of_api():

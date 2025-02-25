@@ -27,14 +27,17 @@ def send_whatsapp_message():
     response = execute_request("send_whatsapp_message", data)
 
 def execute_request(api_name, data):
+    if get_status() == "COMPLETED":
+        logger.warning(f"Skipping {api_name} execution: Already completed.")
+        return {"status": "skipped", "message": f"{api_name} execution skipped."}
 
     response = requests.post(get_url(), json=data, headers=get_header())
-    response_data = response.json()
-    update_status()
-    add_message_to_firestore()
-
+    response_data = response.json()     
+    mark_message_as_read()
     logger.info(f"{api_name} executed successfully: {response_data}")
-    return mark_message_as_read()
+    update_status()
+
+    return {"status": "success", "response": response_data} 
 
 def mark_message_as_read():
     logger.info(f"Marking message {get_message_id()} as read")
