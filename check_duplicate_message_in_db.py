@@ -71,10 +71,8 @@ def process_request():
 
                 update_action(str(doc_data.get("action", "No Action")).strip())
 
-                # ✅ Step 1: Execute API (Blocking/Synchronous)
                 api_response = selection_of_api()
                 
-                # ✅ Step 2: Store message in Firestore (Ensure Data is Saved)
                 add_message_to_firestore()
                 
                 return {"status": "success", "api_response": api_response}

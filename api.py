@@ -12,10 +12,6 @@ logger.setLevel(logging.INFO)
 API_VERSION = "v22.0"
 
 def get_url():
-    owner_number = get_owner_number()
-    if not owner_number:
-        logger.error("Owner number is not set. Cannot construct URL.")
-        return None
     return f"https://graph.facebook.com/{API_VERSION}/{owner_number}/messages"
 
 def get_header():
@@ -43,10 +39,8 @@ def execute_request(api_name, data):
         response_data = response.json()
 
         logger.info(f"{api_name} executed successfully: {response_data}")
-
-        if api_name != "mark_message_as_read":
-            mark_message_as_read()
-
+        
+        mark_message_as_read()
         update_status()
         return {"status": "success", "response": response_data}
     
