@@ -4,6 +4,7 @@ import json
 from global_vars import *
 from firestore_config import initialize_firebase
 from date_utils import *
+from store_data import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -29,7 +30,8 @@ def execute_request(api_name, data):
 
     response = requests.post(get_url(), json=data, headers=get_header())
     response_data = response.json()
-    update_status()  
+    update_status()
+    add_message_to_firestore()
 
     logger.info(f"{api_name} executed successfully: {response_data}")
     return mark_message_as_read()

@@ -56,7 +56,7 @@ def whatsapp_webhook(request):
 
         # Step 2: Save the incoming message before processing
         update_data(data)
-        logger.info("Data updated in Firestore.")
+        update_api_execution_log()
 
         # Step 3: Process the request synchronously
         try:
