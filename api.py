@@ -40,3 +40,14 @@ def mark_message_as_read():
         "status": "read",
         "message_id": get_message_id()}
     response = execute_request("mark_message_as_read", data)
+
+def send_image_message():
+    logger.info(f"Sending image message to {get_owner_reply_message()}")
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": get_user_number(),
+        "type": "image",
+        "image": {"link": get_owner_reply_message}
+    }
+    return execute_request("send_image_message", data)
