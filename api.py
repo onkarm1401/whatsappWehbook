@@ -17,6 +17,7 @@ def get_header():
     return {"Content-Type": "application/json", "Authorization": f"Bearer {get_access_key()}"}
 
 def send_whatsapp_message():
+    logger.info("inside send_whatsapp_message")
     logger.info(f"Sending WhatsApp message to {get_user_number()}")
 
     data = {
@@ -113,6 +114,7 @@ def send_reply_button(button_text, buttons):
     return execute_request("send_reply_button", data)
 
 def execute_request(api_name, data):
+    logger.info("inside sending message")
     db=initialize_firebase()
   
     response = requests.post(get_url(), json=data, headers=get_header())

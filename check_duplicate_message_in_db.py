@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def process_request():
+    logger.info("inside process request")
     db = initialize_firebase()
     extract_response(db)
     get_owner_information(db)
@@ -16,6 +17,7 @@ def process_request():
     return
 
 def extract_response(db):
+    logger.info("inside extract response")
     data = get_data()
     if data and "entry" in data:
         for entry in data["entry"]:
@@ -30,6 +32,7 @@ def extract_response(db):
     return
 
 def get_owner_information(db):
+    logger.info("inside get owner")
     query = db.collection('whatsapp-personal-information') \
         .where('phone_number', '==', get_owner_number()) \
         .stream()
@@ -42,6 +45,7 @@ def get_owner_information(db):
     return
 
 def get_reply_message(db):
+    logger.info("inside get reply message")
     reply_message_collection = db.collection("whatsapp-flow-chart") \
         .where("owner_phone_number", "==", str(get_owner_number())) \
         .where("user_message", "==", str(get_user_message())) \
@@ -56,6 +60,7 @@ def get_reply_message(db):
     return
 
 def process_whatsapp_request():
+    logger.info("inside whatsapp request")
     action = get_action()
 
     if action == "send_whatsapp_message":
@@ -63,8 +68,8 @@ def process_whatsapp_request():
     else:
         logger.error(f"Invalid action specified: {action}")
 
-
 def get_message_id_from_response(db, data):
+    logger.info("inside get message id")
     if not data or "entry" not in data:
         return None
 

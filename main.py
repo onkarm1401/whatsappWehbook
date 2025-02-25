@@ -40,6 +40,8 @@ def whatsapp_webhook(request):
 
 
         new_msg_id = get_message_id_from_response(db, get_data())
+        logger.info(f"new_msg_id: {new_msg_id}")
+        logger.info(f"old emessage id: {get_message_id()}")
 
         if new_msg_id != get_message_id():
             process_request()
