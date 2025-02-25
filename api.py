@@ -24,8 +24,7 @@ def send_whatsapp_message():
         "to": get_user_number(),
         "text": {"body": get_owner_reply_message()}
     }
-
-    return execute_request("send_whatsapp_message", data)
+    execute_request("send_whatsapp_message", data)
 
 def mark_message_as_read():
     logger.info(f"Marking message {get_message_id()} as read")
@@ -128,5 +127,3 @@ def execute_request(api_name, data):
         "reply-message": get_owner_reply_message()
     })
     logger.info(f"{api_name} executed successfully: {response_data}")
-    
-    return
