@@ -56,6 +56,7 @@ def whatsapp_webhook(request):
             break
 
         if found:
+            logger.info("Inside started to update message status")
             msg_status = status = data['entry'][0]['changes'][0]['value']['statuses'][0]['status']
             db.collection('whatsapp-messages').where('msg_id', '==', entry_id).stream()
             for doc in docs:
