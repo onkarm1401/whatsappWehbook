@@ -12,7 +12,9 @@ def add_message_to_firestore():
         "owner_number": get_owner_number(),
         "reply_message": get_owner_reply_message(),
         "user_number": get_user_number(),
-        "user_message": get_user_message()
+        "user_message": get_user_message(),
+        "msg_id":get_response_id()
+
     }
 
     try:

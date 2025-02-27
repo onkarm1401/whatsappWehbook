@@ -15,6 +15,15 @@ message_id = None
 data = None
 status = None
 send_button_menu_options =None
+response_id = None
+
+def update_response_id(received_id):
+    global response_id
+    response_id = received_id
+    logger.info(f"updated response id: {response_id}")
+
+def get_response_id():
+    return response_id
 
 def update_button_menu_option(new_button_options):
     global send_button_menu_options
