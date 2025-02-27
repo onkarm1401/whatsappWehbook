@@ -47,43 +47,33 @@ def whatsapp_webhook(request):
 
 
         # Step 1: Check if the message has already been processed
-        logger.info(f"received data {data}")
-        update_response_id(data['entry'][0]['id'])
-        entry_id = data['entry'][0]['id']
-        logger.info(f"response id {entry_id}")
+        statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
 
-        docs = db.collection("whatsapp-messages").where("msg_id", "==", str(entry_id)).stream()
-        logger.info(f"doc against response id :  {docs}")
-
-
-        found = False
-        logger.info(f"Found flag precheck {found}")
-
-        logger.info(found)
-        for _ in docs:  # Loop through docs to check if anything exists
-            found = True
-            break
-        logger.info(f"Found flag post check {found}")
-
-        if found:
-            logger.info("Inside started to update message status")
-            msg_status = status = data['entry'][0]['changes'][0]['value']['statuses'][0]['status']
-            logger.info(msg_status)
+        if statuses is not None:
+            logger.info(f"Started updated status {status}")
+            updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
+            logger.info(f"response id {updated_status}")
+            docs = db.collection("whatsapp-messages").where("msg_id", "==", str(get_message_id())).stream()
             db.collection('whatsapp-messages').where('msg_id', '==', entry_id).stream()
             for doc in docs:
                 doc.reference.update({
                     'status': msg_status
                 })
 
-            logger.info("Ignored as same message is received and updated message status")
+            logger.info(f"Updated message status{updated_status}")
             return {"status": "Already completed"}, 200
-
 
  #       if new_msg_id == last_processed_msg_id:
   #          logger.info("Processing already completed. Stopping execution.")
    #         return {"status": "Already completed"}, 200
 
         # Step 2: Save the incoming message before processing
+        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']        
+        msg_occurance = db.collection('whatsapp-messages').where('msg_id', '==', wamid).stream()
+        if msg_occurance is None:
+            logger.info(f"Duplicate message is recived : {data}")
+            return {"status": "Duplicate message"}, 200
+
         logger.info("started execution")
         update_status("PENDING")
         update_data(data)
