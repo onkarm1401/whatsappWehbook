@@ -47,17 +47,23 @@ def whatsapp_webhook(request):
 
 
         # Step 1: Check if the message has already been processed
+        logger.info(f"received data {data}")
         entry_id = update_response_id(data['entry'][0]['id'])
-        logger.info(entry_id) 
+        logger.info(f"response id {entry_id}")
+
         docs = db.collection("whatsapp-messages").where("msg_id", "==", str(entry_id)).stream()
-        logger.info(docs)
+        logger.info(f"doc against response id :  {docs}")
+
 
         found = False
+        logger.info(f"Found flag precheck {found}")
+
         logger.info(found)
         for _ in docs:  # Loop through docs to check if anything exists
             found = True
             break
-        logger.info(found)
+        logger.info(f"Found flag post check {found}")
+
         if found:
             logger.info("Inside started to update message status")
             msg_status = status = data['entry'][0]['changes'][0]['value']['statuses'][0]['status']
@@ -77,6 +83,7 @@ def whatsapp_webhook(request):
    #         return {"status": "Already completed"}, 200
 
         # Step 2: Save the incoming message before processing
+        logger.info("started execution")
         update_status("PENDING")
         update_data(data)
         update_api_execution_log()
