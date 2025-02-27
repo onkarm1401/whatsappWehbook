@@ -35,25 +35,36 @@ def whatsapp_webhook(request):
 
         logger.info(f"Received WhatsApp Webhook: {data}")
 
-        new_msg_id = None  # Initialize the message ID
+ #       new_msg_id = None  # Initialize the message ID
 
-        for entry in data.get("entry", []):
-            for change in entry.get("changes", []):
-                messages = change.get("value", {}).get("messages", [])
-                if messages:
-                    new_msg_id = messages[0]["id"]  # Assuming only one message per request
-                    break  # Stop loop after finding the first message
-        
-        if not new_msg_id:
-            logger.warning("No messages found in webhook response")
-            return {"error": "No messages found"}, 400
+#        for entry in data.get("entry", []):
+ #           for change in entry.get("changes", []):
+ #               messages = change.get("value", {}).get("messages", [])
+ #              if messages:
+   #                 new_msg_id = messages[0]["id"]  # Assuming only one message per request
+     #               break  # Stop loop after finding the first message
+   #     
+
 
         # Step 1: Check if the message has already been processed
         last_processed_msg_id = get_message_id()  # Function to fetch the last processed message ID
         
-        if new_msg_id == last_processed_msg_id:
-            logger.info("Processing already completed. Stopping execution.")
+        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']
+        docs = db.collection("whatsapp-messages").where("msg_id", "==", str(wamid)).stream()
+
+        found = False
+        for _ in docs:  # Loop through docs to check if anything exists
+            found = True
+            break
+
+        if found:
+            logger.info("Ignored as same message is received")
             return {"status": "Already completed"}, 200
+
+
+ #       if new_msg_id == last_processed_msg_id:
+  #          logger.info("Processing already completed. Stopping execution.")
+   #         return {"status": "Already completed"}, 200
 
         # Step 2: Save the incoming message before processing
         update_status("PENDING")
