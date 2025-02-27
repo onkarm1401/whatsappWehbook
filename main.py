@@ -52,12 +52,13 @@ def whatsapp_webhook(request):
         if statuses is not None:
             logger.info(f"Started updated status {status}")
             updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
-            logger.info(f"response id {updated_status}")
-            docs = db.collection("whatsapp-messages").where("msg_id", "==", str(get_message_id())).stream()
-            db.collection('whatsapp-messages').where('msg_id', '==', entry_id).stream()
+            logger.info(f"updated status is  {updated_status}")
+            msg_id = data['entry'][0]['changes'][0]['value']['statuses'][0]['id']
+            docs = db.collection("whatsapp-messages").where("msg_id", "==", str(msg_id)).stream()
+            db.collection('whatsapp-messages').where('msg_id', '==', msg_id).stream()
             for doc in docs:
                 doc.reference.update({
-                    'status': msg_status
+                    'status': updated_status
                 })
 
             logger.info(f"Updated message status{updated_status}")
