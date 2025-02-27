@@ -35,42 +35,31 @@ def whatsapp_webhook(request):
 
         logger.info(f"Received WhatsApp Webhook: {data}")
 
- #       new_msg_id = None  # Initialize the message ID
 
-#        for entry in data.get("entry", []):
- #           for change in entry.get("changes", []):
- #               messages = change.get("value", {}).get("messages", [])
- #              if messages:
-   #                 new_msg_id = messages[0]["id"]  # Assuming only one message per request
-     #               break  # Stop loop after finding the first message
-   #     
-
-
-        # Step 1: Check if the message has already been processed
+# Step 1: update message status
         statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
 
         if statuses is not None:
             logger.info(f"Started updated status {status}")
-
+            
+            #check send message status like read, delivery
             updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
             logger.info(f"updated status is  {updated_status}")
 
             msg_id = data['entry'][0]['changes'][0]['value']['statuses'][0]['id']
             update_message_id(msg_id)
+            logger.info(f"Message status update for msg if {msg_id}")
             docs = db.collection("whatsapp-messages").where("msg_id", "==", str(msg_id)).stream()
             for doc in docs:
                 doc.reference.update({
                     'status': updated_status
                 })
 
-            logger.info(f"Updated message status{updated_status}")
+            logger.info(f"Updated message status : {updated_status}")
             return {"status": "Already completed"}, 200
 
- #       if new_msg_id == last_processed_msg_id:
-  #          logger.info("Processing already completed. Stopping execution.")
-   #         return {"status": "Already completed"}, 200
+#new msg execution
 
-        # Step 2: Save the incoming message before processing
         wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']        
         msg_occurance = db.collection('whatsapp-messages').where('msg_id', '==', wamid).stream()
         if msg_occurance is None:
