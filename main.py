@@ -50,6 +50,7 @@ def whatsapp_webhook(request):
         entry_id = update_response_id(data['entry'][0]['id'])
         logger.info(entry_id) 
         docs = db.collection("whatsapp-messages").where("msg_id", "==", str(entry_id)).stream()
+        logger.info(docs)
 
         found = False
         logger.info(found)
