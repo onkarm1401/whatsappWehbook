@@ -47,11 +47,7 @@ def whatsapp_webhook(request):
 
 
         # Step 1: Check if the message has already been processed
-        entry_id = update_response_id(data['entry'][0]['id'])
-        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']
-  #      last_processed_msg_id = get_message_id()  # Function to fetch the last processed message ID
-        
-        
+        entry_id = update_response_id(data['entry'][0]['id'])       
         docs = db.collection("whatsapp-messages").where("msg_id", "==", str(entry_id)).stream()
 
         found = False
