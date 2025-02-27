@@ -47,17 +47,20 @@ def whatsapp_webhook(request):
 
 
         # Step 1: Check if the message has already been processed
-        entry_id = update_response_id(data['entry'][0]['id'])       
+        entry_id = update_response_id(data['entry'][0]['id'])
+        logger.info(entry_id) 
         docs = db.collection("whatsapp-messages").where("msg_id", "==", str(entry_id)).stream()
 
         found = False
+        logger.info(found)
         for _ in docs:  # Loop through docs to check if anything exists
             found = True
             break
-
+        logger.info(found)
         if found:
             logger.info("Inside started to update message status")
             msg_status = status = data['entry'][0]['changes'][0]['value']['statuses'][0]['status']
+            logger.info(msg_status)
             db.collection('whatsapp-messages').where('msg_id', '==', entry_id).stream()
             for doc in docs:
                 doc.reference.update({
