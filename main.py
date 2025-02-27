@@ -55,9 +55,7 @@ def whatsapp_webhook(request):
             logger.info(f"updated status is  {updated_status}")
             msg_id = data['entry'][0]['changes'][0]['value']['statuses'][0]['id']
             docs = db.collection("whatsapp-messages").where("msg_id", "==", str(msg_id)).stream()
-            found = False
             for doc in docs:
-                found = True
                 doc.reference.update({
                     'status': updated_status
                 })
