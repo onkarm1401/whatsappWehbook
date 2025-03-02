@@ -50,6 +50,7 @@ def process_request():
                 update_owner_number(owner_info.get("phone_number", None))
                 update_access_key(owner_info.get("key", None))
                 user_id = owner_info.get("user_id",None)
+                logger.info(f"user id : {user_id}")
 
                 # Firestore Query: Fetch Reply Message
                 reply_message_collection = db.collection("whatsapp-flow-chart") \
@@ -61,6 +62,8 @@ def process_request():
                 documents = list(reply_message_collection)
                 if not documents:
                     logger.error("No reply message found")
+                    update_owner_reply_message(str("Unable to understand you question, Pleae connect support team"))
+                    send_whatsapp_message()
                     return {"status": "error", "message": "No reply message found"}
 
                 doc_data = documents[0].to_dict()
