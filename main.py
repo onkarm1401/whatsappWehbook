@@ -58,6 +58,22 @@ def whatsapp_webhook(request):
             logger.info(f"Updated message status : {updated_status}")
             return {"status": "Already completed"}, 200
 
+        button_id = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['id']
+        button_title = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['title']
+        if button_id is not None:
+            update_user_message(button_title)
+            update_status("PENDING")
+            update_data(data)
+            update_api_execution_log()
+
+            try:
+                process_request()  # Ensure this runs synchronously
+                logger.info("Request processed successfully.")
+                return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
+            except Exception as e:
+                logger.error(f"Error processing request: {str(e)}")
+                return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
+
 #new msg execution
 
         wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']        

@@ -64,6 +64,7 @@ def process_request():
                     logger.error("No reply message found")
                     update_owner_reply_message(str("Unable to understand you question, Pleae connect support team"))
                     send_whatsapp_message()
+                    add_message_to_firestore()
                     return {"status": "error", "message": "No reply message found"}
 
                 doc_data = documents[0].to_dict()
