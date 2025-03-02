@@ -136,7 +136,7 @@ def send_button_menu():
         "interactive": {
             "type": "button",
             "body": {"text": get_owner_reply_message()},
-            "action": {"buttons": buttons_data}
+            "action": buttons_data
         }
     }
     
