@@ -36,37 +36,38 @@ def whatsapp_webhook(request):
         logger.info(f"Received WhatsApp Webhook: {data}")
 
 #checking for new message
-        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']        
-        msg_occurance = db.collection('whatsapp-messages').where('msg_id', '==', wamid).stream()
-        if msg_occurance is None:
-            logger.info(f"Duplicate message is recived : {data}")
-            return {"status": "Duplicate message"}, 200
+        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']
+        if wamid:     
+            msg_occurance = db.collection('whatsapp-messages').where('msg_id', '==', wamid).stream()
+            if msg_occurance is None:
+                logger.info(f"Duplicate message is recived : {data}")
+                return {"status": "Duplicate message"}, 200
 
-        logger.info("started execution")
-        update_status("PENDING")
-        update_data(data)
-        update_api_execution_log()
-        
-        update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
-        update_user_message(data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'])
-        update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['id'])
-        update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
+            logger.info("started execution")
+            update_status("PENDING")
+            update_data(data)
+            update_api_execution_log()
+            
+            update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
+            update_user_message(data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'])
+            update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['id'])
+            update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
 
-        # Step 3: Process the request synchronously
-        try:
-            process_request()  # Ensure this runs synchronously
-            logger.info("Request processed successfully.")
-            return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
-        except Exception as e:
-            logger.error(f"Error processing request: {str(e)}")
-            return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
+            # Step 3: Process the request synchronously
+            try:
+                process_request()  # Ensure this runs synchronously
+                logger.info("Request processed successfully.")
+                return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
+            except Exception as e:
+                logger.error(f"Error processing request: {str(e)}")
+                return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
 
 #checking status update APi
 
         statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
         logger.info(f"checking status field in response:  {status}")
 
-        if statuses is not None:  
+        if statuses:  
             #check send message status like read, delivery
             updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
             logger.info(f"updated status is  {updated_status}")
