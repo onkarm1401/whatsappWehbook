@@ -55,7 +55,7 @@ def process_request():
                 # Firestore Query: Fetch Reply Message
                 reply_message_collection = db.collection("whatsapp-flow-chart") \
                     .where("user_id", "==", str(user_id)) \
-                    .where("user_message", "==", str(get_user_message())) \
+                    .where("message", "==", str(get_user_message())) \
                     .limit(1) \
                     .get()
 
