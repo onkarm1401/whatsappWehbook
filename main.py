@@ -36,8 +36,10 @@ def whatsapp_webhook(request):
         logger.info(f"Received WhatsApp Webhook: {data}")
 
 #checking for new message
-        wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id']
-        if wamid:     
+        response_check = data['entry'][0]['changes'][0]['value']
+        
+        if 'messages' in response_check:
+            wamid = data['entry'][0]['changes'][0]['value']['messages'][0]['id'] 
             msg_occurance = db.collection('whatsapp-messages').where('msg_id', '==', wamid).stream()
             if msg_occurance is None:
                 logger.info(f"Duplicate message is recived : {data}")
@@ -63,11 +65,9 @@ def whatsapp_webhook(request):
                 return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
 
 #checking status update APi
-
-        statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
-        logger.info(f"checking status field in response:  {status}")
-
-        if statuses:  
+        if 'statuses' in response_check:  
+            statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
+            logger.info(f"checking status field in response:  {status}")
             #check send message status like read, delivery
             updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
             logger.info(f"updated status is  {updated_status}")
@@ -84,27 +84,30 @@ def whatsapp_webhook(request):
 
             logger.info(f"Updated message status : {updated_status}")
             return {"status": "Already completed"}, 200
- #checking for response message       
-        else:       
-            button_id = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['id']
-            button_title = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['title']
-            logger.info(f"button response is recieved button id : {button_id}")
-            if button_id is not None:
-                update_user_message(button_title)
-                update_status("PENDING")
-                update_data(data)
-                update_api_execution_log()
+ 
+#checking for response message       
+        if 'messages' in response_check:
+            message = change_value['messages'][0]
+            if message.get('type') == 'interactive' and 'interactive' in message:  
+                button_id = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['id']
+                button_title = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['title']
+                logger.info(f"button response is recieved button id : {button_id}")
+                if button_id is not None:
+                    update_user_message(button_title)
+                    update_status("PENDING")
+                    update_data(data)
+                    update_api_execution_log()
 
-                update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
-                update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'])
-                update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
+                    update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
+                    update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'])
+                    update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
 
-                try:
-                    process_request()  # Ensure this runs synchronously
-                    logger.info("Request processed successfully.")
-                    return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
-                except Exception as e:
-                    logger.error(f"Error processing request: {str(e)}")
-                    return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
+                    try:
+                        process_request()  # Ensure this runs synchronously
+                        logger.info("Request processed successfully.")
+                        return {"status": "Processed successfully"}, 200  # ✅ Process completed successfully
+                    except Exception as e:
+                        logger.error(f"Error processing request: {str(e)}")
+                        return {"error": "Processing failed", "details": str(e)}, 500  # ✅ Handle processing errors
         
     return {"error": "Invalid request method"}, 405  # ✅ Handle unsupported HTTP methods
