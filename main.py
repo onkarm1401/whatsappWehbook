@@ -61,7 +61,7 @@ def whatsapp_webhook(request):
  
 #checking for response contains message       
         if 'messages' in response_check:
-            message = change_value['messages'][0]
+            message = response_check['messages'][0]
             #if response contains interactive object means it is response of previous message.
             if message.get('type') == 'interactive' and 'interactive' in message:  
                 button_id = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['id']
