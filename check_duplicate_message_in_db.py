@@ -63,7 +63,7 @@ def process_request():
 
 
   #      update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
-        response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id,ai_key)
+        response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id)
         update_action(response['api'])
         update_owner_reply_message(response_text = response['response_text'])
 
