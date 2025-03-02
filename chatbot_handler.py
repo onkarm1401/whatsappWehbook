@@ -4,8 +4,6 @@ import json
 from datetime import datetime, timezone, timedelta
 from global_vars import *
 
-openai.api_key = get_ai_key()
-
 def add_message_to_thread(thread_id, user_message):
     openai.beta.threads.messages.create(
         thread_id=thread_id,
@@ -42,6 +40,7 @@ def get_last_assistant_message(messages):
 
 def chatbot_process(user_message,ASSISTANT_ID,thread_id):
     openai.api_key = get_ai_key()
+    logger.info(f" open ai key : {get_ai_key()}")
 
     # Step 1: Add user message to predefined thread
     add_message_to_thread(thread_id, user_message)
