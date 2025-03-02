@@ -40,38 +40,9 @@ def process_request():
 
         logger.info(f"user id: {user_id}")
 
-        # Firestore Query: Fetch Reply Message
-        reply_message_collection = (
-            db.collection("whatsapp-flow-chart")
-            .where("user_id", "==", str(user_id))
-            .where("message", "==", str(get_user_message()))
-            .limit(1)
-            .get()
-        )
-
-        documents = list(reply_message_collection)
-        if not documents:
-            logger.error("No reply message found")
-            update_owner_reply_message("Unable to understand your question. Please contact the support team.")
-            send_whatsapp_message()
-            add_message_to_firestore()
-            return {"status": "error", "message": "No reply message found"}
-
-        doc_data = documents[0].to_dict()
-        
-   # This key is needed once, before making any request.
-
-
-  #      update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
         response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id)
         update_action(response['api'])
-        update_owner_reply_message(response_text = response['response_text'])
-
-        # Ensure `button_menu_option` is properly formatted
- #       button_menu_option = str(doc_data.get("buttons", "")).strip().replace("\\", "")
- #       update_button_menu_option(button_menu_option)
-  #      update_image_path(str(doc_data.get("image", "Image is not present")).strip())
- #       update_action(str(doc_data.get("action", "No Action")).strip())
+        update_owner_reply_message(response['response_text'])
 
         api_response = selection_of_api()
 
