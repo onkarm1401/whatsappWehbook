@@ -49,10 +49,11 @@ def process_request():
                 owner_info = data_list[0]
                 update_owner_number(owner_info.get("phone_number", None))
                 update_access_key(owner_info.get("key", None))
+                user_id = owner_info.get("user_id",None)
 
                 # Firestore Query: Fetch Reply Message
                 reply_message_collection = db.collection("whatsapp-flow-chart") \
-                    .where("owner_phone_number", "==", str(get_owner_number())) \
+                    .where("user_id", "==", str(user_id)) \
                     .where("user_message", "==", str(get_user_message())) \
                     .limit(1) \
                     .get()

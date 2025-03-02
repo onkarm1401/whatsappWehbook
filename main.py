@@ -35,7 +35,6 @@ def whatsapp_webhook(request):
 
         logger.info(f"Received WhatsApp Webhook: {data}")
 
-
 # Step 1: update message status
         statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
 
