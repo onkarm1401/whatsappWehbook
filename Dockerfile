@@ -18,7 +18,6 @@ COPY . ./
 ENV VERIFY_TOKEN=my_secure_token
 ENV WHATSAPP_ACCESS_TOKEN=my_whatsapp_token
 
-# Expose port 8080 for the webhook
 EXPOSE 8080
 
 # Run the application

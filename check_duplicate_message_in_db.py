@@ -3,6 +3,7 @@ from date_utils import get_current_ist_time
 from api import *
 from global_vars import *
 import logging
+from chatbot_handler import *
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,10 @@ def process_request():
         update_owner_number(owner_info.get("phone_number", None))
         update_access_key(owner_info.get("key", None))
         user_id = owner_info.get("user_id", None)
+        ASSISTANT_ID = owner_info.get("ASSISTANT_ID", None)
+        ai_key = owner_info.get("ai", None)
+        thread_id = owner_info.get("thread_id", None)
+
         logger.info(f"user id: {user_id}")
 
         # Firestore Query: Fetch Reply Message
@@ -53,13 +58,17 @@ def process_request():
             return {"status": "error", "message": "No reply message found"}
 
         doc_data = documents[0].to_dict()
-        update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
+
+  #      update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
+        response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id)
+        update_action(response['api'])
+        update_owner_reply_message(response_text = response['response_text'])
 
         # Ensure `button_menu_option` is properly formatted
-        button_menu_option = str(doc_data.get("buttons", "")).strip().replace("\\", "")
-        update_button_menu_option(button_menu_option)
-        update_image_path(str(doc_data.get("image", "Image is not present")).strip())
-        update_action(str(doc_data.get("action", "No Action")).strip())
+ #       button_menu_option = str(doc_data.get("buttons", "")).strip().replace("\\", "")
+ #       update_button_menu_option(button_menu_option)
+  #      update_image_path(str(doc_data.get("image", "Image is not present")).strip())
+ #       update_action(str(doc_data.get("action", "No Action")).strip())
 
         api_response = selection_of_api()
 
