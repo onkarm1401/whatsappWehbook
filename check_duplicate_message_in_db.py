@@ -58,9 +58,12 @@ def process_request():
             return {"status": "error", "message": "No reply message found"}
 
         doc_data = documents[0].to_dict()
+        
+   # This key is needed once, before making any request.
+
 
   #      update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
-        response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id)
+        response = chatbot_process(get_user_message(),ASSISTANT_ID,thread_id,ai_key)
         update_action(response['api'])
         update_owner_reply_message(response_text = response['response_text'])
 

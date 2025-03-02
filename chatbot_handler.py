@@ -37,7 +37,9 @@ def get_last_assistant_message(messages):
             return message.content[0].text.value if message.content else ""
     return ""
 
-def chatbot_process(user_message,ASSISTANT_ID,thread_id):
+def chatbot_process(user_message,ASSISTANT_ID,thread_id,ai_key):
+    import openai
+    openai.api_key = ai_key
     # Step 1: Add user message to predefined thread
     add_message_to_thread(thread_id, user_message)
 
