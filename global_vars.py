@@ -16,6 +16,15 @@ data = None
 status = None
 send_button_menu_options =None
 response_id = None
+image_path = None
+
+def update_image_path(im_path):
+    global image_path
+    image_path = im_path
+    logger.info(f"updated image path {image_path}")
+
+def get_image_path():
+    return image_path
 
 def update_response_id(received_id):
     global response_id

@@ -70,8 +70,9 @@ def process_request():
                 update_owner_reply_message(str(doc_data.get("reply_message", "No reply found")).strip())
 
                 # Ensure `button_menu_option` is properly formatted
-                button_menu_option = str(doc_data.get("button_menu_option", "")).strip().replace("\\", "")
+                button_menu_option = str(doc_data.get("buttons", "")).strip().replace("\\", "")
                 update_button_menu_option(button_menu_option)
+                update_image_path(str(doc_data.get("image", "image is not present")).strip())
 
                 update_action(str(doc_data.get("action", "No Action")).strip())
 
