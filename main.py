@@ -59,7 +59,7 @@ def whatsapp_webhook(request):
                     logger.info(f"Message status updated to: {updated_status}")
                     return {"status": "Already completed"}, 200
         except Exception as e:
-            logger.error(f"Error updating message status: {str(e)}")
+            pass
 
         # Step 2: Handle incoming message (button reply or text message)
         try:
