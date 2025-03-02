@@ -37,10 +37,9 @@ def whatsapp_webhook(request):
 
 # Step 1: update message status
         statuses = data['entry'][0]['changes'][0]['value'].get('statuses')
+        logger.info(f"checking status field in response:  {status}")
 
-        if statuses is not None:
-            logger.info(f"Started updated status {status}")
-            
+        if statuses is not None:  
             #check send message status like read, delivery
             updated_status = status_value = data['entry'][0]['changes'][0]['value'].get('statuses', [{}])[0].get('status', None)
             logger.info(f"updated status is  {updated_status}")
@@ -67,6 +66,10 @@ def whatsapp_webhook(request):
             update_data(data)
             update_api_execution_log()
 
+            update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
+            update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['context']['id'])
+            update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
+
             try:
                 process_request()  # Ensure this runs synchronously
                 logger.info("Request processed successfully.")
@@ -87,6 +90,11 @@ def whatsapp_webhook(request):
         update_status("PENDING")
         update_data(data)
         update_api_execution_log()
+        
+        update_owner_number(data['entry'][0]['changes'][0]['value']['metadata']['phone_number_id'])
+        update_user_message(data['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'])
+        update_message_id(data['entry'][0]['changes'][0]['value']['messages'][0]['id'])
+        update_user_number(data['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'])
 
         # Step 3: Process the request synchronously
         try:
