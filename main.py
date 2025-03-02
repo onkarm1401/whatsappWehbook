@@ -60,6 +60,7 @@ def whatsapp_webhook(request):
 
         button_id = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['id']
         button_title = data['entry'][0]['changes'][0]['value']['messages'][0]['interactive']['button_reply']['title']
+        logger.info(f"button response is recieved button id : {button_id}")
         if button_id is not None:
             update_user_message(button_title)
             update_status("PENDING")
