@@ -60,8 +60,11 @@ def get_last_assistant_message(messages):
             return message.content[0].text.value if message.content else ""
     return ""
 
-def chatbot_process(user_message,ASSISTANT_ID,thread_id):
+def chatbot_process(user_message, ASSISTANT_ID, thread_id):
     logger.info("Inside chatbot process method")
+
+    # Fetch key from Secret Manager and set it for OpenAI
+    openai.api_key = get_openai_key()
 
     # Step 1: Add user message to predefined thread
     add_message_to_thread(thread_id, user_message)
@@ -78,4 +81,5 @@ def chatbot_process(user_message,ASSISTANT_ID,thread_id):
     # Step 4: Retrieve messages and get last assistant response
     messages = get_messages_from_thread(thread_id)
     return get_last_assistant_message(messages)
+
 
