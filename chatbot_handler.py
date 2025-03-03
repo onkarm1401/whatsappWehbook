@@ -3,6 +3,26 @@ import time
 import json
 from datetime import datetime, timezone, timedelta
 from global_vars import *
+from google.cloud import secretmanager
+
+def get_openai_key():
+    # Initialize Secret Manager Client
+    client = secretmanager.SecretManagerServiceClient()
+
+    # Project ID (replace with your actual GCP Project ID)
+    project_id = "chatbot-2300b"
+
+    # Secret name based on user_id
+    secret_name = "openai_key"
+
+    # Secret path (format: projects/PROJECT_ID/secrets/SECRET_NAME/versions/latest)
+    secret_path = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
+
+    # Access the secret
+    response = client.access_secret_version(name=secret_path)
+
+    # Decode and return the actual key
+    return response.payload.data.decode("UTF-8")
 
 def add_message_to_thread(thread_id, user_message):
     openai.beta.threads.messages.create(
@@ -39,7 +59,7 @@ def get_last_assistant_message(messages):
     return ""
 
 def chatbot_process(user_message,ASSISTANT_ID,thread_id):
-    openai.api_key = get_ai_key()
+    openai.api_key = get_openai_key()
     logger.info(f" open ai key : {get_ai_key()}")
 
     # Step 1: Add user message to predefined thread
