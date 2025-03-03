@@ -6,6 +6,7 @@ from global_vars import *
 from google.cloud import secretmanager
 
 def get_openai_key():
+    logger.info("Inside openai key")
     # Initialize Secret Manager Client
     client = secretmanager.SecretManagerServiceClient()
 
@@ -60,6 +61,7 @@ def get_last_assistant_message(messages):
     return ""
 
 def chatbot_process(user_message,ASSISTANT_ID,thread_id):
+    logger.info("Inside chatbot process method")
 
     # Step 1: Add user message to predefined thread
     add_message_to_thread(thread_id, user_message)
