@@ -61,6 +61,10 @@ def chatbot_process(user_message, ASSISTANT_ID, thread_id):
 
     # ✅ Fetch key from Secret Manager and explicitly reset client
     openai.api_key = get_openai_key()
+    logger.info(f"openai key : {get_openai_key()}" )
+    logger.info(f"assistnet id : {ASSISTANT_ID}")
+    logger.info(f"thread id : {thread_id}")
+
 
     # ✅ Clear stale client state (helps avoid old issues with proxies)
     openai.default_http_client = None
