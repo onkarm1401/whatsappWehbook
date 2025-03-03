@@ -17,15 +17,6 @@ status = None
 send_button_menu_options =None
 response_id = None
 image_path = None
-ai_key = None
-
-def update_ai_key(key):
-    global ai_key
-    ai_key=key
-    logger.info("updated ai key")
-
-def get_ai_key():
-    return ai_key
 
 def update_image_path(im_path):
     global image_path

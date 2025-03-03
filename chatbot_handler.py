@@ -1,29 +1,25 @@
 import openai
 import time
 import json
+import logging  # ✅ Add this
 from datetime import datetime, timezone, timedelta
-from global_vars import *
 from google.cloud import secretmanager
+
+# ✅ Set up logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 def get_openai_key():
     logger.info("Inside openai key")
-    # Initialize Secret Manager Client
     client = secretmanager.SecretManagerServiceClient()
 
-    # Project ID (replace with your actual GCP Project ID)
     project_id = "chatbot-2300b"
-    logger.info(f" inside openai function")
+    logger.info("inside openai function")
 
-    # Secret name based on user_id
     secret_name = "openai_key"
-
-    # Secret path (format: projects/PROJECT_ID/secrets/SECRET_NAME/versions/latest)
     secret_path = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
 
-    # Access the secret
     response = client.access_secret_version(name=secret_path)
-
-    # Decode and return the actual key
     return response.payload.data.decode("UTF-8")
 
 def add_message_to_thread(thread_id, user_message):
@@ -63,8 +59,11 @@ def get_last_assistant_message(messages):
 def chatbot_process(user_message, ASSISTANT_ID, thread_id):
     logger.info("Inside chatbot process method")
 
-    # Fetch key from Secret Manager and set it for OpenAI
+    # ✅ Fetch key from Secret Manager and explicitly reset client
     openai.api_key = get_openai_key()
+
+    # ✅ Clear stale client state (helps avoid old issues with proxies)
+    openai.default_http_client = None
 
     # Step 1: Add user message to predefined thread
     add_message_to_thread(thread_id, user_message)
@@ -81,5 +80,3 @@ def chatbot_process(user_message, ASSISTANT_ID, thread_id):
     # Step 4: Retrieve messages and get last assistant response
     messages = get_messages_from_thread(thread_id)
     return get_last_assistant_message(messages)
-
-
