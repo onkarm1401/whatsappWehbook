@@ -1,18 +1,15 @@
 import time
 import logging
 from google.cloud import secretmanager
-from openai import OpenAI  # ✅ This is the new recommended client import
+from openai import OpenAI  # ✅ Correct import for v2
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 def get_openai_key():
-    logger.info("Inside openai key")
     client = secretmanager.SecretManagerServiceClient()
-
     project_id = "chatbot-2300b"
     secret_path = f"projects/{project_id}/secrets/openai_key/versions/latest"
-
     response = client.access_secret_version(name=secret_path)
     return response.payload.data.decode("UTF-8")
 
@@ -51,9 +48,14 @@ def get_last_assistant_message(messages):
     return ""
 
 def chatbot_process(user_message, ASSISTANT_ID, thread_id):
+    from openai import OpenAI
+    client = OpenAI(default_headers={"OpenAI-Beta": "assistants=v2"})
     logger.info("Inside chatbot process method")
+    logger.info(f"user message : {user_message}")
+    logger.info(f"ASSISTANT_ID : {ASSISTANT_ID}")
+    logger.info(f"thread_id : {thread_id}")
 
-    client = OpenAI(api_key=get_openai_key())  # ✅ New way to create client
+    client = OpenAI(api_key=get_openai_key())  # ✅ Correct client creation for v2
 
     add_message_to_thread(client, thread_id, user_message)
     run_id = run_thread(client, thread_id, ASSISTANT_ID)
