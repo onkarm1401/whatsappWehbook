@@ -35,7 +35,6 @@ def process_request():
         update_access_key(owner_info.get("key", None))
         user_id = owner_info.get("user_id", None)
         ASSISTANT_ID = owner_info.get("ASSISTANT_ID", None)
-        ai_key = owner_info.get("ai", None)
         thread_id = owner_info.get("thread_id", None)
 
         logger.info(f"user id: {user_id}")
